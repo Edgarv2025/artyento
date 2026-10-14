@@ -86,85 +86,45 @@ function getCurrentSeasonConfig() {
 /**
  * Genera el Schema.org JSON-LD para indexación en Google
  */
-function generateStructuredData(baseUrl = 'https://artesyentretenimiento.com') {
-  const catalog = getCatalogData();
-  const season = getCurrentSeasonConfig();
-
-  const reviewsCount = catalog.testimonios.length || 15;
-  
-  // Mapeo de ofertas de paquetes reales
-  const offers = (catalog.paquetes || []).map(p => {
-    // Normalizar precio quitando puntos y símbolo $
-    const numPrice = parseInt(p.precio.replace(/[^0-9]/g, ''), 10) || 600000;
-    return {
-      '@type': 'Offer',
-      'name': p.titulo,
-      'description': p.elementos ? p.elementos.join(', ') : '',
-      'price': numPrice,
-      'priceCurrency': 'COP',
-      'availability': 'https://schema.org/InStock',
-      'url': `${baseUrl}/#paquetes`
-    };
-  });
-
+function generateStructuredData(baseUrl = 'https://artyento.artyento.workers.dev') {
+  const cleanBase = baseUrl.replace(/\/$/, '');
   return {
     '@context': 'https://schema.org',
-    '@graph': [
+    '@type': 'EntertainmentBusiness',
+    '@id': `${cleanBase}/#organization`,
+    'name': 'Artes y Entretenimiento',
+    'url': `${cleanBase}/`,
+    'logo': `${cleanBase}/assets/arty/icon-512x512.png`,
+    'image': `${cleanBase}/assets/arty/og.jpg`,
+    'description': 'DJ, sonido profesional e iluminación para bodas, quinces y eventos empresariales en Bogotá y Cundinamarca. Cotiza por WhatsApp.',
+    'telephone': ['+573202459032', '+573128431149'],
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': 'Calle 16 h Bis #112A-14',
+      'addressLocality': 'Bogotá',
+      'addressRegion': 'Bogotá D.C.',
+      'postalCode': '110911',
+      'addressCountry': 'CO'
+    },
+    'geo': {
+      '@type': 'GeoCoordinates',
+      'latitude': 4.66598,
+      'longitude': -74.15654
+    },
+    'areaServed': [
       {
-        '@type': ['LocalBusiness', 'EntertainmentBusiness'],
-        '@id': `${baseUrl}/#organization`,
-        'name': 'Artes y Entretenimiento',
-        'url': baseUrl,
-        'logo': `${baseUrl}/fotos/hero.png`,
-        'image': `${baseUrl}/fotos/hero.png`,
-        'description': 'Empresa líder en alquiler de sonido profesional, iluminación de espectáculos, pantallas y pistas LED, y DJs de alta categoría para bodas, 15 años y eventos corporativos en Bogotá y toda Colombia.',
-        'telephone': '+573202459032',
-        'priceRange': '$$',
-        'address': {
-          '@type': 'PostalAddress',
-          'streetAddress': 'Calle 16 h Bis #112A-14',
-          'addressLocality': 'Bogotá',
-          'addressRegion': 'Bogotá D.C.',
-          'postalCode': '110911',
-          'addressCountry': 'CO'
-        },
-        'geo': {
-          '@type': 'GeoCoordinates',
-          'latitude': 4.66598,
-          'longitude': -74.15654
-        },
-        'openingHoursSpecification': [
-          {
-            '@type': 'OpeningHoursSpecification',
-            'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            'opens': '08:00',
-            'closes': '22:00'
-          }
-        ],
-        'sameAs': [
-          'https://www.facebook.com/artesyentretenimiento',
-          'https://www.instagram.com/artyento/',
-          'https://www.tiktok.com/@artyento'
-        ],
-        'founder': {
-          '@type': 'Person',
-          'name': 'Edgar DJ Cool',
-          'jobTitle': 'CEO & Director Artístico General',
-          'description': 'Productor técnico, DJ profesional Crossover y Director General de Artes y Entretenimiento con más de 10 años creando experiencias inolvidables en Colombia.'
-        },
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '5.0',
-          'reviewCount': reviewsCount.toString(),
-          'bestRating': '5',
-          'worstRating': '1'
-        },
-        'hasOfferCatalog': {
-          '@type': 'OfferCatalog',
-          'name': 'Propuestas Integrales de Sonido, Iluminación y DJs',
-          'itemListElement': offers
-        }
+        '@type': 'City',
+        'name': 'Bogotá'
+      },
+      {
+        '@type': 'AdministrativeArea',
+        'name': 'Cundinamarca'
       }
+    ],
+    'sameAs': [
+      'https://www.instagram.com/artyento/',
+      'https://www.tiktok.com/@artyento',
+      'https://www.facebook.com/artyento'
     ]
   };
 }

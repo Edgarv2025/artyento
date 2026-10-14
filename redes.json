@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "titulo": "Montaje de iluminación y cabina DJ",
+    "imagen": "assets/optimized/social_1.webp",
+    "enlace": "https://www.instagram.com/artyento/?utm_source=sitio&utm_medium=web&utm_campaign=redes",
+    "red": "Instagram"
+  },
+  {
+    "id": 2,
+    "titulo": "Boda campestre en la Sabana",
+    "imagen": "assets/optimized/social_2.webp",
+    "enlace": "https://www.instagram.com/artyento/?utm_source=sitio&utm_medium=web&utm_campaign=redes",
+    "red": "Instagram"
+  },
+  {
+    "id": 3,
+    "titulo": "Gala empresarial y sonido en vivo",
+    "imagen": "assets/optimized/social_3.webp",
+    "enlace": "https://www.instagram.com/artyento/?utm_source=sitio&utm_medium=web&utm_campaign=redes",
+    "red": "Instagram"
+  },
+  {
+    "id": 4,
+    "titulo": "Show de luces robóticas y efectos",
+    "imagen": "assets/optimized/social_4.webp",
+    "enlace": "https://www.tiktok.com/@artyento?utm_source=sitio&utm_medium=web&utm_campaign=redes",
+    "red": "TikTok"
+  },
+  {
+    "id": 5,
+    "titulo": "Tótems LED y cabina de DJ",
+    "imagen": "assets/optimized/social_5.webp",
+    "enlace": "https://www.instagram.com/artyento/?utm_source=sitio&utm_medium=web&utm_campaign=redes",
+    "red": "Instagram"
+  },
+  {
+    "id": 6,
+    "titulo": "Fiesta privada y rumba crossover",
+    "imagen": "assets/optimized/social_6.webp",
+    "enlace": "https://www.tiktok.com/@artyento?utm_source=sitio&utm_medium=web&utm_campaign=redes",
+    "red": "TikTok"
+  }
+]

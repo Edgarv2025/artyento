@@ -1,20 +1,58 @@
 [
   {
     "id": 1,
-    "title": "Evento Corporativo Premium",
-    "image": "assets/corp_3.jpg",
-    "description": "Sonido profesional y montaje para conferencias."
+    "titulo": "Boda en Hacienda Sabana de Bogotá",
+    "imagen": "assets/optimized/galeria_1.webp",
+    "categoria": "Bodas",
+    "descripcion": "Montaje de iluminación cálida y sonido profesional para ceremonia y recepción."
   },
   {
     "id": 2,
-    "title": "Boda Exclusiva con Djcool",
-    "image": "assets/boda_3.jpg",
-    "description": "Fiesta inigualable con nuestro servicio Crossover."
+    "titulo": "Celebración de Quince Años",
+    "imagen": "assets/optimized/galeria_2.webp",
+    "categoria": "Quinces",
+    "descripcion": "Pista de baile con cabezas robóticas y show de DJ crossover."
   },
   {
     "id": 3,
-    "title": "Concierto al aire libre",
-    "image": "assets/bar_3.jpg",
-    "description": "Potencia y claridad para grandes audiencias."
+    "titulo": "Gala Corporativa y Lanzamiento",
+    "imagen": "assets/optimized/galeria_3.webp",
+    "categoria": "Empresariales",
+    "descripcion": "Sonorización para discursos institucionales e iluminación perimetral."
+  },
+  {
+    "id": 4,
+    "titulo": "Fiesta Privada y Rumba Crossover",
+    "imagen": "assets/optimized/galeria_4.webp",
+    "categoria": "Privados",
+    "descripcion": "Montaje compacto de alta fidelidad con efectos láser sincronizados."
+  },
+  {
+    "id": 5,
+    "titulo": "Celebración Familiar",
+    "imagen": "assets/optimized/galeria_5.webp",
+    "categoria": "Sociales",
+    "descripcion": "Ambiente musical acogedor y sonido nítido para eventos familiares."
+  },
+  {
+    "id": 6,
+    "titulo": "Montaje de Iluminación Robótica",
+    "imagen": "assets/optimized/galeria_6.webp",
+    "categoria": "Producción",
+    "descripcion": "Estructura de luces con tótems verticales y cabina DJ."
+  },
+  {
+    "id": 7,
+    "titulo": "Pantalla LED para evento",
+    "imagen": "assets/optimized/galeria_7.webp",
+    "categoria": "Producción",
+    "descripcion": "Montaje de pantalla LED y estructura técnica para una presentación audiovisual."
+  },
+  {
+    "id": 8,
+    "titulo": "Cabina de DJ y sonido para eventos",
+    "imagen": "assets/optimized/galeria_8.webp",
+    "categoria": "Producción",
+    "descripcion": "Consola y equipos de audio listos para una celebración en salón."
   }
 ]

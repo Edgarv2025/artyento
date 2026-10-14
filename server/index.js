@@ -65,7 +65,7 @@ seoPages.forEach(([route, file]) => {
   });
 });
 
-// Montar API de Marketing Inteligente y CRM
+// Endpoints de administración del catálogo y contenido del sitio.
 app.use('/api/marketing', marketingRoutes);
 
 // El servidor vive dentro de la raíz del proyecto.
@@ -103,7 +103,6 @@ app.listen(PORT, () => {
   console.log(' ✨ ARTES & ENTRETENIMIENTO - PLATAFORMA INTEGRAL');
   console.log(` 🌐 Sitio Web Público:       http://localhost:${PORT}/`);
   console.log(` 🛠️ Panel Administrativo:   http://localhost:${PORT}/admin.html`);
-  console.log(` 🚀 Marketing Inteligente:   http://localhost:${PORT}/marketing.html`);
   console.log(` 🔍 Sitemap Google (SEO):    http://localhost:${PORT}/sitemap.xml`);
   console.log(` 🤖 Robots.txt (SEO):        http://localhost:${PORT}/robots.txt`);
   console.log(` 📈 Salud SEO Actual:        ${seoStatus.score}/100 (${seoStatus.currentSeason})`);
