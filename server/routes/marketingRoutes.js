@@ -439,10 +439,7 @@ const { calculateSeoHealth, runAutonomousSeoCycle, generateStructuredData } = re
 router.get('/seo/status', (req, res) => {
   try {
     const health = calculateSeoHealth();
-    const host = req.get('host');
-    const protocol = req.protocol || 'http';
-    const baseUrl = `${protocol}://${host}`;
-    const structuredData = generateStructuredData(baseUrl);
+    const structuredData = generateStructuredData();
 
     res.json({
       success: true,

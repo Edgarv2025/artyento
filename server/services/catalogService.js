@@ -2,25 +2,30 @@ const fs = require('fs');
 const path = require('path');
 
 const datosFilePath = path.resolve(__dirname, '../../datos.js');
+const paquetesFilePath = path.resolve(__dirname, '../../paquetes.js');
+
+function readCatalogFile(filePath) {
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const sandbox = {};
+  const fn = new Function('sandbox', `
+    ${fileContent}
+    sandbox.paquetesData = typeof paquetesData !== 'undefined' ? paquetesData : undefined;
+    sandbox.artistasData = typeof artistasData !== 'undefined' ? artistasData : undefined;
+    sandbox.testimoniosData = typeof testimoniosData !== 'undefined' ? testimoniosData : undefined;
+  `);
+  fn(sandbox);
+  return sandbox;
+}
 
 function getCatalogData() {
   try {
-    const fileContent = fs.readFileSync(datosFilePath, 'utf8');
-    
-    // Ejecutar de forma segura en un contexto aislado para extraer las variables
-    const sandbox = {};
-    const fn = new Function('sandbox', `
-      ${fileContent}
-      sandbox.paquetesData = typeof paquetesData !== 'undefined' ? paquetesData : [];
-      sandbox.artistasData = typeof artistasData !== 'undefined' ? artistasData : [];
-      sandbox.testimoniosData = typeof testimoniosData !== 'undefined' ? testimoniosData : [];
-    `);
-    fn(sandbox);
+    const siteData = readCatalogFile(datosFilePath);
+    const packageData = readCatalogFile(paquetesFilePath);
     
     return {
-      paquetes: sandbox.paquetesData,
-      artistas: sandbox.artistasData,
-      testimonios: sandbox.testimoniosData,
+      paquetes: siteData.paquetesData !== undefined ? siteData.paquetesData : packageData.paquetesData || [],
+      artistas: siteData.artistasData || [],
+      testimonios: siteData.testimoniosData || [],
       marca: {
         nombre: 'Artes y Entretenimiento',
         slogan: 'Vive tu Experiencia. Nosotros ponemos la Magia.',

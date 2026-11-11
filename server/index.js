@@ -27,19 +27,13 @@ app.use((req, res, next) => {
 
 // --- Rutas SEO Dinámicas para Google Search Console ---
 app.get('/sitemap.xml', (req, res) => {
-  const host = req.get('host');
-  const protocol = req.protocol || 'http';
-  const baseUrl = `${protocol}://${host}`;
   res.header('Content-Type', 'application/xml');
-  res.send(generateSitemapXml(baseUrl));
+  res.send(generateSitemapXml());
 });
 
 app.get('/robots.txt', (req, res) => {
-  const host = req.get('host');
-  const protocol = req.protocol || 'http';
-  const baseUrl = `${protocol}://${host}`;
   res.header('Content-Type', 'text/plain');
-  res.send(generateRobotsTxt(baseUrl));
+  res.send(generateRobotsTxt());
 });
 
 app.get('/manifest.json', (req, res) => {

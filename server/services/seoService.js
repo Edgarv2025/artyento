@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { getCatalogData } = require('./catalogService');
 
+const SITE_URL = 'https://artesyentretenimiento.com';
+
 /**
  * Servicio de Posicionamiento SEO Inteligente y Algoritmo Continuo
  * Gestiona optimización estacional, generación de sitemap.xml, robots.txt,
@@ -86,16 +88,15 @@ function getCurrentSeasonConfig() {
 /**
  * Genera el Schema.org JSON-LD para indexación en Google
  */
-function generateStructuredData(baseUrl = 'https://artyento.artyento.workers.dev') {
-  const cleanBase = baseUrl.replace(/\/$/, '');
+function generateStructuredData() {
   return {
     '@context': 'https://schema.org',
     '@type': 'EntertainmentBusiness',
-    '@id': `${cleanBase}/#organization`,
+    '@id': `${SITE_URL}/#organization`,
     'name': 'Artes y Entretenimiento',
-    'url': `${cleanBase}/`,
-    'logo': `${cleanBase}/assets/arty/icon-512x512.png`,
-    'image': `${cleanBase}/assets/arty/og.jpg`,
+    'url': `${SITE_URL}/`,
+    'logo': `${SITE_URL}/assets/arty/icon-512x512.png`,
+    'image': `${SITE_URL}/assets/arty/og.jpg`,
     'description': 'DJ, sonido profesional e iluminación para bodas, quinces y eventos empresariales en Bogotá y Cundinamarca. Cotiza por WhatsApp.',
     'telephone': ['+573202459032', '+573128431149'],
     'address': {
@@ -132,11 +133,16 @@ function generateStructuredData(baseUrl = 'https://artyento.artyento.workers.dev
 /**
  * Genera el XML del mapa del sitio para Google Search Console
  */
-function generateSitemapXml(baseUrl = 'https://artesyentretenimiento.com') {
+function generateSitemapXml() {
   const today = new Date().toISOString().split('T')[0];
 
   const pages = [
-    { url: `${baseUrl}/`, priority: '1.0', changefreq: 'weekly' },
+    { url: `${SITE_URL}/`, priority: '1.0', changefreq: 'weekly' },
+    { url: `${SITE_URL}/dj-bogota`, priority: '0.9', changefreq: 'weekly' },
+    { url: `${SITE_URL}/sonido-eventos-bogota`, priority: '0.9', changefreq: 'weekly' },
+    { url: `${SITE_URL}/iluminacion-eventos-bogota`, priority: '0.9', changefreq: 'weekly' },
+    { url: `${SITE_URL}/dj-bodas-bogota`, priority: '0.9', changefreq: 'weekly' },
+    { url: `${SITE_URL}/eventos-empresariales-bogota`, priority: '0.9', changefreq: 'weekly' }
   ];
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -158,7 +164,7 @@ function generateSitemapXml(baseUrl = 'https://artesyentretenimiento.com') {
 /**
  * Genera robots.txt optimizado para crawlers de Google, Bing y Redes Sociales
  */
-function generateRobotsTxt(baseUrl = 'https://artesyentretenimiento.com') {
+function generateRobotsTxt() {
   return `# Robots.txt - Artes y Entretenimiento
 User-agent: *
 Allow: /
@@ -172,7 +178,7 @@ Disallow: /admin.html
 Disallow: /server/
 Disallow: /api/
 
-Sitemap: ${baseUrl}/sitemap.xml
+Sitemap: ${SITE_URL}/sitemap.xml
 `;
 }
 
@@ -236,6 +242,7 @@ function runAutonomousSeoCycle() {
 }
 
 module.exports = {
+  SITE_URL,
   getCurrentSeasonConfig,
   generateStructuredData,
   generateSitemapXml,

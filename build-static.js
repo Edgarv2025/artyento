@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { generateStructuredData, getCurrentSeasonConfig } = require('./server/services/seoService');
+const { SITE_URL, generateStructuredData } = require('./server/services/seoService');
 
 const root = __dirname;
 const publicDir = path.join(root, 'public');
@@ -22,11 +22,11 @@ const files = [
 const directories = ['assets', 'fotos', 'schema'];
 
 function prepareSeoHtml(html) {
-  const baseUrl = (process.env.SEO_BASE_URL || 'https://artyento.artyento.workers.dev/').replace(/\/$/, '') + '/';
+  const baseUrl = `${SITE_URL}/`;
   const title = 'DJ, sonido e iluminación para eventos en Bogotá | Artes y Entretenimiento';
   const description = 'DJ, sonido profesional e iluminación para bodas, quinces y eventos empresariales en Bogotá y Cundinamarca. Cotiza por WhatsApp.';
   const keywords = 'DJ Bogotá, sonido profesional eventos Bogotá, iluminación robótica Bogotá, bodas, quinces, eventos empresariales';
-  const structuredData = JSON.stringify(generateStructuredData(baseUrl), null, 2);
+  const structuredData = JSON.stringify(generateStructuredData(), null, 2);
 
   return html
     .replace(/<title>[^<]*<\/title>/i, `<title>${title}</title>`)
@@ -59,37 +59,37 @@ for (const directory of directories) {
 const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://artyento.artyento.workers.dev/</loc>
+    <loc>${SITE_URL}/</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://artyento.artyento.workers.dev/dj-bogota</loc>
+    <loc>${SITE_URL}/dj-bogota</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://artyento.artyento.workers.dev/sonido-eventos-bogota</loc>
+    <loc>${SITE_URL}/sonido-eventos-bogota</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://artyento.artyento.workers.dev/iluminacion-eventos-bogota</loc>
+    <loc>${SITE_URL}/iluminacion-eventos-bogota</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://artyento.artyento.workers.dev/dj-bodas-bogota</loc>
+    <loc>${SITE_URL}/dj-bodas-bogota</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://artyento.artyento.workers.dev/eventos-empresariales-bogota</loc>
+    <loc>${SITE_URL}/eventos-empresariales-bogota</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -98,7 +98,7 @@ const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 `;
 
 fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapContent, 'utf8');
-fs.writeFileSync(path.join(publicDir, 'robots.txt'), 'User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /server/\nSitemap: https://artyento.artyento.workers.dev/sitemap.xml\n', 'utf8');
+fs.writeFileSync(path.join(publicDir, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /server/\nSitemap: ${SITE_URL}/sitemap.xml\n`, 'utf8');
 fs.writeFileSync(path.join(publicDir, 'manifest.json'), JSON.stringify({
   name: 'Artes y Entretenimiento',
   short_name: 'Artes y Entretenimiento',

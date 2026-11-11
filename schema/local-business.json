@@ -1,7 +1,7 @@
 {
   "@context": "https://schema.org",
   "@type": ["LocalBusiness", "EventService"],
-  "name": "Artes & Entretenimiento",
+  "name": "Artes y Entretenimiento",
   "description": "DJ, sonido e iluminación para eventos en Bogotá, Colombia. Especialistas en bodas, fiestas privadas y eventos empresariales.",
   "url": "https://artesyentretenimiento.com",
   "telephone": "+573202459032",
@@ -23,10 +23,10 @@
     "Madrid"
   ],
   "priceRange": "$$",
-  "image": "https://artesyentretenimiento.com/fotos/hero.png",
-  "logo": "https://artesyentretenimiento.com/fotos/hero.png",
+  "image": "https://artesyentretenimiento.com/assets/arty/og.jpg",
+  "logo": "https://artesyentretenimiento.com/assets/arty/icon-512x512.png",
   "sameAs": [
-    "https://www.facebook.com/artesyentretenimiento",
+    "https://www.facebook.com/artyento",
     "https://www.instagram.com/artyento/",
     "https://www.tiktok.com/@artyento"
   ],
