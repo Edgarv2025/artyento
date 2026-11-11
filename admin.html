@@ -181,6 +181,7 @@
     <!-- Cargar datos actuales para poder editarlos -->
     <script src="datos.js"></script>
     <script>
+        const hasPaquetesData = typeof paquetesData !== 'undefined';
         let misPaquetes = typeof paquetesData !== 'undefined' ? JSON.parse(JSON.stringify(paquetesData)) : [];
         let misArtistas = typeof artistasData !== 'undefined' ? JSON.parse(JSON.stringify(artistasData)) : [];
         let misTestimonios = typeof testimoniosData !== 'undefined' ? JSON.parse(JSON.stringify(testimoniosData)) : [];
@@ -189,9 +190,42 @@
         let editingArtistaIdx = null;
         let editingTestimonioIdx = null;
 
-        function checkPassword() {
+        async function cargarPaquetes() {
+            if (hasPaquetesData) return;
+
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'paquetes.js';
+                script.onload = resolve;
+                script.onerror = () => reject(new Error('No se pudo cargar paquetes.js'));
+                document.head.appendChild(script);
+            });
+
+            if (typeof paquetesData === 'undefined' || !Array.isArray(paquetesData)) {
+                throw new Error('paquetes.js no contiene un catálogo válido');
+            }
+
+            misPaquetes = JSON.parse(JSON.stringify(paquetesData));
+        }
+
+        function mostrarErrorInicializacion(error) {
+            const statusEl = document.getElementById('save-status');
+            statusEl.style.display = 'block';
+            statusEl.style.color = '#ff4444';
+            statusEl.innerText = `No se pudo cargar el catálogo: ${error.message}`;
+            console.error('Error al inicializar el catálogo administrativo:', error);
+        }
+
+        async function checkPassword() {
             const pass = (document.getElementById('password').value || '').trim();
             if(pass === 'admin2026') {
+                try {
+                    await cargarPaquetes();
+                } catch (error) {
+                    mostrarErrorInicializacion(error);
+                    return;
+                }
+
                 sessionStorage.setItem('admin_logged', 'true');
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
@@ -202,8 +236,15 @@
             }
         }
 
-        function initAdminAuth() {
+        async function initAdminAuth() {
             if (sessionStorage.getItem('admin_logged') === 'true') {
+                try {
+                    await cargarPaquetes();
+                } catch (error) {
+                    mostrarErrorInicializacion(error);
+                    return;
+                }
+
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
                 renderLists();
