@@ -104,7 +104,6 @@ function generateStructuredData() {
       'streetAddress': 'Calle 16 h Bis #112A-14',
       'addressLocality': 'Bogotá',
       'addressRegion': 'Bogotá D.C.',
-      'postalCode': '110911',
       'addressCountry': 'CO'
     },
     'geo': {
