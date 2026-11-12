@@ -20,19 +20,49 @@ const files = [
   'paquetes.js'
 ];
 const directories = ['assets', 'fotos', 'schema'];
+const canonicalUrls = {
+  'index.html': `${SITE_URL}/`,
+  'dj-bogota.html': `${SITE_URL}/dj-bogota`,
+  'sonido-eventos-bogota.html': `${SITE_URL}/sonido-eventos-bogota`,
+  'iluminacion-eventos-bogota.html': `${SITE_URL}/iluminacion-eventos-bogota`,
+  'dj-bodas-bogota.html': `${SITE_URL}/dj-bodas-bogota`,
+  'eventos-empresariales-bogota.html': `${SITE_URL}/eventos-empresariales-bogota`
+};
 
-function prepareSeoHtml(html) {
-  const baseUrl = `${SITE_URL}/`;
+function prepareSeoHtml(html, canonicalUrl, isHomepage = false) {
+  if (!/<head\b/i.test(html) || !/<\/head>/i.test(html)) {
+    throw new Error('No se pudo generar canonical: el documento no contiene un elemento head completo.');
+  }
+
+  const withoutCanonicals = html.replace(/<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*>\s*/gi, '');
+  const robotsMeta = /<meta\b(?=[^>]*\bname\s*=\s*["']robots["'])[^>]*>/i;
+  if (!robotsMeta.test(withoutCanonicals)) {
+    throw new Error('No se pudo generar canonical: falta la etiqueta meta robots.');
+  }
+
+  const lineBreak = html.includes('\r\n') ? '\r\n' : '\n';
+  let preparedHtml = withoutCanonicals.replace(
+    robotsMeta,
+    match => `${match}${lineBreak}  <link rel="canonical" href="${canonicalUrl}">`
+  );
+  preparedHtml = preparedHtml.replace(
+    /<meta\b(?=[^>]*\bproperty\s*=\s*["']og:url["'])[^>]*>/i,
+    `<meta property="og:url" content="${canonicalUrl}">`
+  );
+
+  if (!isHomepage) {
+    return preparedHtml;
+  }
+
   const title = 'DJ, sonido e iluminación para eventos en Bogotá | Artes y Entretenimiento';
   const description = 'DJ, sonido profesional e iluminación para bodas, quinces y eventos empresariales en Bogotá y Cundinamarca. Cotiza por WhatsApp.';
   const keywords = 'DJ Bogotá, sonido profesional eventos Bogotá, iluminación robótica Bogotá, bodas, quinces, eventos empresariales';
   const structuredData = JSON.stringify(generateStructuredData(), null, 2);
 
-  return html
+  return preparedHtml
     .replace(/<title>[^<]*<\/title>/i, `<title>${title}</title>`)
     .replace(/<meta name="description" content="[^"]*">/i, `<meta name="description" content="${description}">`)
     .replace(/<meta name="keywords" content="[^"]*">/i, `<meta name="keywords" content="${keywords}">`)
-    .replace(/<link rel="canonical" href="[^"]*">/i, `<link rel="canonical" href="${baseUrl}">`)
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/i, `<script type="application/ld+json">\n    ${structuredData}\n    </script>`);
 }
 
@@ -42,8 +72,9 @@ fs.mkdirSync(publicDir, { recursive: true });
 for (const file of files) {
   const sourcePath = path.join(root, file);
   const targetPath = path.join(publicDir, file);
-  if (file === 'index.html') {
-    fs.writeFileSync(targetPath, prepareSeoHtml(fs.readFileSync(sourcePath, 'utf8')), 'utf8');
+  if (Object.prototype.hasOwnProperty.call(canonicalUrls, file)) {
+    const sourceHtml = fs.readFileSync(sourcePath, 'utf8');
+    fs.writeFileSync(targetPath, prepareSeoHtml(sourceHtml, canonicalUrls[file], file === 'index.html'), 'utf8');
   } else if (fs.existsSync(sourcePath)) {
     fs.copyFileSync(sourcePath, targetPath);
   }
