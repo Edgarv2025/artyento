@@ -241,10 +241,6 @@ Ya sea para ${audienceInfo.nombre.toLowerCase()}, cuidamos cada detalle técnico
 }
 
 async function callGeminiAPI(params) {
-  const { GoogleGenerativeAI } = require('@google/generative-ai');
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
   const systemContext = `Eres el Director Creativo y Copywriter Senior de la empresa de producción musical y técnica "Artes y Entretenimiento" en Bogotá, Colombia.
 Información real de la empresa (NO INVENTAR OTROS PRECIOS NI SERVICIOS):
 - Marca: Artes y Entretenimiento
@@ -272,8 +268,22 @@ Devuelve EXCLUSIVAMENTE un JSON válido con la siguiente estructura:
   ]
 }`;
 
-  const result = await model.generateContent(systemContext);
-  const responseText = result.response.text();
+  // Llamada REST directa: evita la dependencia @google/generative-ai,
+  // que no está instalada y hacía fallar silenciosamente esta rama.
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(process.env.GEMINI_API_KEY)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: systemContext }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+      })
+    }
+  );
+  if (!response.ok) throw new Error(`Gemini API status ${response.status}`);
+  const data = await response.json();
+  const responseText = data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
   const cleaned = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
   return JSON.parse(cleaned);
 }

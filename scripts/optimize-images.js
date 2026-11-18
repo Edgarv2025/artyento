@@ -9,6 +9,15 @@ if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
 }
 
+// Imágenes que hoy se sirven en JPG de 4-5 MB. Se recomprimen desde el JPG
+// que actualmente se ve en la página para conservar exactamente el encuadre.
+const legacyImagesToProcess = [
+  { src: path.join(root, 'assets', 'optimized', 'hero.jpg'), out: 'hero-lcp.webp', width: 1920, quality: 82 },
+  { src: path.join(root, 'assets', 'optimized', 'galeria_4.jpg'), out: 'galeria_4-opt.webp', width: 800, quality: 80 },
+  { src: path.join(root, 'assets', 'optimized', 'galeria_6.jpg'), out: 'galeria_6-opt.webp', width: 800, quality: 80 },
+  { src: path.join(root, 'assets', 'optimized', 'social_6.jpg'), out: 'social_6-opt.webp', width: 600, quality: 80 }
+];
+
 const imagesToProcess = [
   { src: path.join(root, 'fotos', 'hero.png'), out: 'hero.webp', width: 1920, quality: 82 },
   { src: path.join(root, 'assets', 'boda_3.jpg'), out: 'boda.webp', width: 1200, quality: 80 },
@@ -33,7 +42,7 @@ const imagesToProcess = [
 
 async function run() {
   console.log('Optimizando imágenes para alto rendimiento...');
-  for (const item of imagesToProcess) {
+  for (const item of [...imagesToProcess, ...legacyImagesToProcess]) {
     if (fs.existsSync(item.src)) {
       const destPath = path.join(outDir, item.out);
       await sharp(item.src)

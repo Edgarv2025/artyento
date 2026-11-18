@@ -12,6 +12,8 @@ const { generateSitemapXml, generateRobotsTxt, runAutonomousSeoCycle } = require
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+// La vista local debe coincidir con lo que Cloudflare publica (carpeta public/).
+const publicPath = path.resolve(__dirname, '..', 'public');
 
 // Middlewares
 app.use(cors());
@@ -37,7 +39,7 @@ app.get('/robots.txt', (req, res) => {
 });
 
 app.get('/manifest.json', (req, res) => {
-  res.sendFile(path.join(publicPath, 'public', 'manifest.json'));
+  res.sendFile(path.join(publicPath, 'manifest.json'));
 });
 
 app.get('/schema/local-business.json', (req, res) => {
@@ -62,8 +64,6 @@ seoPages.forEach(([route, file]) => {
 // Endpoints de administración del catálogo y contenido del sitio.
 app.use('/api/marketing', marketingRoutes);
 
-// El servidor vive dentro de la raíz del proyecto.
-const publicPath = path.resolve(__dirname, '..');
 app.use(express.static(publicPath, {
   maxAge: '1y',
   etag: true,
@@ -75,16 +75,16 @@ app.use(express.static(publicPath, {
   }
 }));
 
-// Fallback a index.html para rutas no encontradas
-app.get('/', (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+// Rutas no encontradas: 404 real, igual que en Cloudflare.
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(publicPath, '404.html'));
 });
 
 app.listen(PORT, () => {
-  // Ejecutar el primer ciclo del algoritmo SEO continuo al iniciar
+  // Revisión de preparación de contenido al iniciar (no es un puntaje de Google).
   const seoStatus = runAutonomousSeoCycle();
-  
-  // Programar optimización continua cada 24 horas (86,400,000 ms)
+
+  // La generación SEO real ocurre en el build; aquí solo se reporta el estado.
   setInterval(() => {
     try {
       runAutonomousSeoCycle();

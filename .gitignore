@@ -8,3 +8,5 @@ campanas/*
 !campanas/.gitkeep
 *.log
 .env*
+reports/
+*gsc*service*account*.json

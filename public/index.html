@@ -27,8 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"></noscript>
-  <link rel="preload" href="assets/optimized/hero-mobile.webp" as="image" type="image/webp" media="(max-width: 600px)">
-  <link rel="preload" href="assets/optimized/hero.webp" as="image" type="image/webp" media="(min-width: 601px)">
+  <link rel="preload" href="assets/optimized/hero-lcp.webp" as="image" type="image/webp" fetchpriority="high">
   <link rel="preload" href="assets/arty/arty-hero.webp" as="image" type="image/webp" media="(min-width: 601px)">
 
   <!-- Metadatos de Geolocalización -->
@@ -56,51 +55,167 @@
   <meta name="twitter:image" content="https://artesyentretenimiento.com/assets/arty/og.jpg">
 
   <!-- Schema.org JSON-LD (EntertainmentBusiness) -->
+  <link rel="stylesheet" href="style.css">
   <script type="application/ld+json">
-    {
+{
   "@context": "https://schema.org",
-  "@type": "EntertainmentBusiness",
-  "@id": "https://artesyentretenimiento.com/#organization",
-  "name": "Artes y Entretenimiento",
-  "url": "https://artesyentretenimiento.com/",
-  "logo": "https://artesyentretenimiento.com/assets/arty/icon-512x512.png",
-  "image": "https://artesyentretenimiento.com/assets/arty/og.jpg",
-  "description": "DJ, sonido profesional e iluminación para bodas, quinces y eventos empresariales en Bogotá y Cundinamarca. Cotiza por WhatsApp.",
-  "telephone": [
-    "+573202459032",
-    "+573128431149"
-  ],
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Calle 16 h Bis #112A-14",
-    "addressLocality": "Bogotá",
-    "addressRegion": "Bogotá D.C.",
-    "addressCountry": "CO"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 4.66598,
-    "longitude": -74.15654
-  },
-  "areaServed": [
+  "@graph": [
     {
-      "@type": "City",
-      "name": "Bogotá"
+      "@type": "EntertainmentBusiness",
+      "@id": "https://artesyentretenimiento.com/#organization",
+      "name": "Artes y Entretenimiento",
+      "url": "https://artesyentretenimiento.com/",
+      "logo": "https://artesyentretenimiento.com/assets/arty/icon-512x512.png",
+      "image": "https://artesyentretenimiento.com/assets/arty/og.jpg",
+      "description": "DJ, sonido profesional e iluminación para bodas, quinces y eventos empresariales en Bogotá y Cundinamarca. Cotiza por WhatsApp.",
+      "telephone": [
+        "+573202459032",
+        "+573128431149"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle 16 h Bis #112A-14",
+        "addressLocality": "Bogotá",
+        "addressRegion": "Bogotá D.C.",
+        "postalCode": "110911",
+        "addressCountry": "CO"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 4.66598,
+        "longitude": -74.15654
+      },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Bogotá"
+        },
+        {
+          "@type": "AdministrativeArea",
+          "name": "Cundinamarca"
+        }
+      ],
+      "sameAs": [
+        "https://www.instagram.com/artyento/",
+        "https://www.tiktok.com/@artyento",
+        "https://www.facebook.com/artyento"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de DJ, sonido e iluminación",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "DJ para eventos en Bogotá",
+              "url": "https://artesyentretenimiento.com/dj-bogota"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Alquiler de sonido profesional para eventos en Bogotá",
+              "url": "https://artesyentretenimiento.com/sonido-eventos-bogota"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Iluminación profesional para eventos en Bogotá",
+              "url": "https://artesyentretenimiento.com/iluminacion-eventos-bogota"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "DJ para bodas en Bogotá",
+              "url": "https://artesyentretenimiento.com/dj-bodas-bogota"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Producción para eventos empresariales en Bogotá",
+              "url": "https://artesyentretenimiento.com/eventos-empresariales-bogota"
+            }
+          }
+        ]
+      }
     },
     {
-      "@type": "AdministrativeArea",
-      "name": "Cundinamarca"
+      "@type": "WebSite",
+      "@id": "https://artesyentretenimiento.com/#website",
+      "url": "https://artesyentretenimiento.com/",
+      "name": "Artes y Entretenimiento",
+      "inLanguage": "es-CO",
+      "publisher": {
+        "@id": "https://artesyentretenimiento.com/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://artesyentretenimiento.com/#webpage",
+      "url": "https://artesyentretenimiento.com/",
+      "name": "DJ, sonido e iluminación para eventos en Bogotá | Artes y Entretenimiento",
+      "description": "DJ, sonido profesional e iluminación para bodas, quinces y eventos empresariales en Bogotá y Cundinamarca. Cotiza por WhatsApp.",
+      "isPartOf": {
+        "@id": "https://artesyentretenimiento.com/#website"
+      },
+      "about": {
+        "@id": "https://artesyentretenimiento.com/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://artesyentretenimiento.com/assets/arty/og.jpg"
+      },
+      "inLanguage": "es-CO"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://artesyentretenimiento.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿En qué zonas trabajan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bogotá y municipios cercanos de Cundinamarca. También otras ciudades de Colombia; el transporte y la logística se cotizan aparte."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué incluye el servicio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "DJ, sonido profesional e iluminación (robóticas, láser y LED). Según el evento, pantallas LED y pista de baile."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cómo cotizo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Escríbenos por WhatsApp con la fecha, el lugar y el número de invitados, y te respondemos con una propuesta a tu medida."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Trabajan eventos empresariales?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí: lanzamientos, ferias, congresos y galas."
+          }
+        }
+      ]
     }
-  ],
-  "sameAs": [
-    "https://www.instagram.com/artyento/",
-    "https://www.tiktok.com/@artyento",
-    "https://www.facebook.com/artyento"
   ]
 }
-    </script>
-
-  <link rel="stylesheet" href="style.css">
+  </script>
 </head>
 <body>
 
@@ -154,7 +269,7 @@
     <section class="hero-section" id="inicio">
       <picture>
         <source media="(max-width: 600px)" srcset="assets/optimized/hero-mobile.jpg" type="image/jpg">
-        <img src="assets/optimized/hero.jpg" alt="Montaje de sonido e iluminación profesional para evento en Bogotá" class="hero-bg" width="1920" height="1080" fetchpriority="high">
+        <img src="assets/optimized/hero-lcp.webp" alt="Montaje de sonido e iluminación profesional para evento en Bogotá" class="hero-bg" width="1920" height="1080" fetchpriority="high">
       </picture>
       <div class="hero-overlay"></div>
       <div class="container">
@@ -460,7 +575,7 @@
           </div>
 
           <div class="gallery-card reveal" data-title="Fiesta Privada y Rumba Crossover" data-desc="Montaje de alta fidelidad con efectos de luces coordinados.">
-            <img src="assets/optimized/galeria_4.jpg" alt="Fiesta Privada con DJ y luces en Bogotá" width="600" height="450" loading="lazy" decoding="async">
+            <img src="assets/optimized/galeria_4-opt.webp" alt="Fiesta Privada con DJ y luces en Bogotá" width="600" height="450" loading="lazy" decoding="async">
             <div class="gallery-caption">Privados · Celebración social</div>
           </div>
 
@@ -470,7 +585,7 @@
           </div>
 
           <div class="gallery-card reveal" data-title="Montaje de Iluminación Robótica" data-desc="Estructura de luces con tótems verticales y cabina de DJ.">
-            <img src="assets/optimized/galeria_6.jpg" alt="Montaje de iluminación y cabina DJ" width="600" height="450" loading="lazy" decoding="async">
+            <img src="assets/optimized/galeria_6-opt.webp" alt="Montaje de iluminación y cabina DJ" width="600" height="450" loading="lazy" decoding="async">
             <div class="gallery-caption">Producción · Montaje de luces</div>
           </div>
 
@@ -530,7 +645,7 @@
             <span class="social-thumb-badge">Instagram</span>
           </a>
           <a href="https://www.tiktok.com/@artyento?utm_source=sitio&utm_medium=web&utm_campaign=redes" target="_blank" rel="noopener noreferrer" class="social-thumb reveal" title="Ver en TikTok: Fiesta privada y rumba">
-            <img src="assets/optimized/social_6.jpg" alt="Rumba crossover en TikTok" width="300" height="300" loading="lazy" decoding="async">
+            <img src="assets/optimized/social_6-opt.webp" alt="Rumba crossover en TikTok" width="300" height="300" loading="lazy" decoding="async">
             <span class="social-thumb-badge">TikTok</span>
           </a>
         </div>
