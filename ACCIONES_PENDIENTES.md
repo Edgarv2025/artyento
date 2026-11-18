@@ -92,6 +92,24 @@ clics, impresiones, posición e indexación reales.
 
 Es la palanca más fuerte para *"DJ Bogotá"*; el local pack del mapa no depende del código.
 
+**Perfil identificado:** https://share.google/Prz4WWHFgLRpAebrs
+ID interno (kgmid): `/g/11zz48479v`.
+
+> Nota: Google bloquea la lectura automatizada de este panel, así que los campos
+> del perfil deben confirmarse desde la cuenta del negocio o con una captura.
+
+**Datos que el sitio publica hoy (deben coincidir exactamente con el perfil):**
+
+| Campo | Valor en el sitio |
+|---|---|
+| Nombre | Artes y Entretenimiento (marca: ARTY) |
+| Dirección | Calle 16 h Bis #112A-14, Bogotá D.C., Colombia |
+| Teléfono principal | +57 320 245 9032 |
+| Teléfono secundario | +57 312 843 1149 |
+| Sitio web | https://artesyentretenimiento.com/ |
+| Redes verificadas | @artyento en Instagram, TikTok y Facebook |
+| Coordenadas en schema | 4.66598, -74.15654 (datos originales del sitio) |
+
 - [ ] Categoría principal: *Servicio de entretenimiento* o *DJ*. Categorías secundarias: *Servicio de sonido*, *Alquiler de iluminación*.
 - [ ] NAP exacto y repetido igual en web, GBP y directorios:
   **Artes y Entretenimiento · Calle 16 h Bis #112A-14, Bogotá D.C. · +57 320 245 9032**.
