@@ -2,8 +2,8 @@
 
 > Estado verificado el 2026-11-18.
 > **Local:** auditoría 0 errores, 2 advertencias esperadas, 95/100 de salud ponderada.
-> **En vivo:** el sitio todavía devuelve `200` para URLs inexistentes, así que los
-> cambios de esta fase **aún no están publicados**.
+> **En vivo:** publicado. `/no-existe-arty` devuelve 404 real; sitemap, robots y
+> llms.txt responden 200; el hero WebP, el canonical y el JSON-LD están presentes.
 
 ---
 
@@ -46,7 +46,81 @@ Además, `robots.txt` debe terminar con `Sitemap: https://artesyentretenimiento.
 
 ---
 
-## 2. Conectar Google Search Console (bloqueado por credenciales)
+## 2. Activar la indexación en Google Search Console
+
+"Activar la página en Search Console" no se hace con código: el dominio ya está
+verificado y lo que falta es que Google **descubra e indexe** las 6 URLs.
+
+### Paso A — Confirmar la propiedad
+
+1. Entrar a https://search.google.com/search-console con la cuenta del negocio.
+2. En el selector de propiedades, usar la **propiedad de dominio**
+   `artesyentretenimiento.com` (es la recomendada; cubre `www` y HTTPS).
+3. Si pidiera verificación, hacerla con un registro **TXT en Cloudflare DNS**.
+   No hace falta tocar el sitio ni subir archivos.
+
+### Paso B — Enviar el sitemap
+
+1. Menú lateral → **Sitemaps**.
+2. En *Agregar un sitemap nuevo* escribir solo `sitemap.xml` → **Enviar**.
+3. Estado esperado: **Correcto** (puede tardar varias horas en aparecer).
+
+El sitemap ya está publicado y contiene exactamente estas 6 URLs:
+
+```
+https://artesyentretenimiento.com/
+https://artesyentretenimiento.com/dj-bogota
+https://artesyentretenimiento.com/sonido-eventos-bogota
+https://artesyentretenimiento.com/iluminacion-eventos-bogota
+https://artesyentretenimiento.com/dj-bodas-bogota
+https://artesyentretenimiento.com/eventos-empresariales-bogota
+```
+
+### Paso C — Solicitar indexación de cada URL
+
+1. Barra superior → **Inspección de URL**.
+2. Pegar una URL de la lista → **Solicitar indexación**.
+3. Repetir con las 6 URLs.
+
+Es una solicitud **manual** y con límite. No existe una API legítima para forzar
+la indexación general: la Indexing API de Google solo aplica a ofertas de empleo
+y eventos de difusión. Cualquier servicio que prometa "indexación forzada por API"
+está vendiendo algo que Google no ofrece.
+
+### Paso D — Verificar el resultado
+
+- Menú **Páginas** → revisar *Páginas indexadas*.
+- Volver a **Inspección de URL**: debe decir **"La URL está en Google"**.
+- Si dice *"Rastreada pero no indexada"*, no es un error técnico: Google ya vio
+  la página pero decidió no incluirla todavía. Se refuerza con contenido real,
+  enlazado interno y señales locales, no con más solicitudes.
+
+### Paso E — Enlazado interno (ya está hecho)
+
+La portada ya enlaza a las 5 páginas de servicio con texto descriptivo, y el
+sitemap incluye `lastmod` real. No hace falta agregar enlaces ni páginas nuevas.
+
+### Estado confirmado en Search Console (2026-11-18)
+
+Inspección de URL de la portada:
+
+- **La página está indexada.**
+- Detección: **Sitemap** `https://artesyentretenimiento.com/sitemap.xml` (ya está dado de alta: no hace falta enviarlo de nuevo).
+- Rastreo permitido: **Sí**. Indexación permitida: **Sí**. Obtención de página: **Correcto**.
+- Canónica declarada: `https://artesyentretenimiento.com/`. Canónica elegida por Google: la URL inspeccionada.
+- Último rastreo: **13 nov 2026**, es decir, **antes** del deploy de los cambios de esta fase.
+
+Acción inmediata: pulsar **Solicitar indexación** en esa misma inspección para que
+Google vuelva a rastrear la versión nueva (404 real, WebP, JSON-LD). Repetir la
+inspección en las otras 5 URLs de la lista del sitemap.
+
+> *Página de referencia: no se ha detectado ninguna* es normal en la portada.
+> En las páginas de servicio sí debe aparecer la portada como referencia: el
+> enlazado interno ya está implementado y se confirma con `npm run seo:full`.
+
+---
+
+## 3. Conectar el agente ARTY a Search Console (bloqueado por credenciales)
 
 El dominio ya está verificado, pero el agente necesita acceso por API. No hay
 `gcloud` instalado, así que esta parte es manual en la consola web.
@@ -88,7 +162,7 @@ clics, impresiones, posición e indexación reales.
 
 ---
 
-## 3. Google Business Profile (requiere acción humana)
+## 4. Google Business Profile (requiere acción humana)
 
 Es la palanca más fuerte para *"DJ Bogotá"*; el local pack del mapa no depende del código.
 
@@ -116,9 +190,10 @@ ID interno (kgmid): `/g/11zz48479v`.
 - Las redes del perfil coinciden con el `sameAs` del schema: Facebook, TikTok e Instagram `@artyento`. Las tres URL responden 200.
 - Categoría visible: *DJ en Bogotá*. Correcta.
 - El perfil tiene 1 opinión de 5 estrellas y 53 interacciones con clientes. No se copian al sitio: las reseñas propias solo se gestionan en Google.
-- **Decisión del negocio:** la dirección real es `Calle 16 h Bis #112A-14`. El sitio y el schema están bien y **no se modifican**. El perfil de Google muestra `Cl. 16h Bis #112 a 09`, un número distinto, porque la vía es cerrada y Maps no la ubica.
+- **Decisión del negocio:** la dirección real es `Calle 16 h Bis #112A-14`. El sitio y el schema están bien y **no se modifican**.
+- **Dirección corregida por el negocio el 2026-11-18** en el perfil de Google. Antes aparecía `Cl. 16h Bis #112 a 09` porque la vía es cerrada y Maps no la ubicaba.
 
-**Cómo corregir la dirección en el perfil sin inventar datos:**
+**Referencia por si Google aún no refleja el cambio o pide ajustes:**
 
 1. *Editar perfil → Información → Dirección*: poner `Calle 16 h Bis #112A-14, Bogotá`.
 2. Si Maps no ubica el número, usar **Ajustar ubicación en el mapa** para colocar el pin exacto y escribir la referencia en *Información adicional de la dirección*.
@@ -136,7 +211,7 @@ ID interno (kgmid): `/g/11zz48479v`.
 
 ---
 
-## 4. Proveedor de IA para ARTY (opcional)
+## 5. Proveedor de IA para ARTY (opcional)
 
 Sin clave, ARTY funciona en modo determinista. Para activar razonamiento:
 
@@ -150,7 +225,7 @@ Luego: `npm run seo:ai`. Las claves nunca se escriben en el sitio ni en los repo
 
 ---
 
-## 5. Contenido local con casos reales (nunca generación automática)
+## 6. Contenido local con casos reales (nunca generación automática)
 
 El motor ya detecta brechas, pero **no publica**. Antes de crear contenido para una
 zona (Chía, Usaquén, Sabana, etc.), confirma con datos verificables:
@@ -165,7 +240,7 @@ Solo con esas respuestas se redacta una página única y revisada por una person
 
 ---
 
-## 6. Verificación final del agente
+## 7. Verificación final del agente
 
 ```powershell
 npm run seo:full
