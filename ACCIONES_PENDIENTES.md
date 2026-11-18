@@ -110,6 +110,22 @@ ID interno (kgmid): `/g/11zz48479v`.
 | Redes verificadas | @artyento en Instagram, TikTok y Facebook |
 | Coordenadas en schema | 4.66598, -74.15654 (datos originales del sitio) |
 
+**Verificación hecha sobre la captura del perfil (2026-11-18):**
+
+- El botón *Sitio web* apunta correctamente a `https://artesyentretenimiento.com/`.
+- Las redes del perfil coinciden con el `sameAs` del schema: Facebook, TikTok e Instagram `@artyento`. Las tres URL responden 200.
+- Categoría visible: *DJ en Bogotá*. Correcta.
+- El perfil tiene 1 opinión de 5 estrellas y 53 interacciones con clientes. No se copian al sitio: las reseñas propias solo se gestionan en Google.
+- **Decisión del negocio:** la dirección real es `Calle 16 h Bis #112A-14`. El sitio y el schema están bien y **no se modifican**. El perfil de Google muestra `Cl. 16h Bis #112 a 09`, un número distinto, porque la vía es cerrada y Maps no la ubica.
+
+**Cómo corregir la dirección en el perfil sin inventar datos:**
+
+1. *Editar perfil → Información → Dirección*: poner `Calle 16 h Bis #112A-14, Bogotá`.
+2. Si Maps no ubica el número, usar **Ajustar ubicación en el mapa** para colocar el pin exacto y escribir la referencia en *Información adicional de la dirección*.
+3. Si no se puede mostrar una dirección física localizable, configurar el perfil como **empresa de área de servicio** (dirección oculta) y declarar Bogotá y la Sabana como zonas atendidas.
+4. Nunca poner un número de puerta falso: rompe la coherencia NAP y puede llevar a la suspensión del perfil.
+5. Mantener teléfono `320 245 9032` y sitio web sin cambios.
+
 - [ ] Categoría principal: *Servicio de entretenimiento* o *DJ*. Categorías secundarias: *Servicio de sonido*, *Alquiler de iluminación*.
 - [ ] NAP exacto y repetido igual en web, GBP y directorios:
   **Artes y Entretenimiento · Calle 16 h Bis #112A-14, Bogotá D.C. · +57 320 245 9032**.
