@@ -158,7 +158,7 @@
     return { text: '¡Hola, qué más! Cuéntame, ¿llegaste por algún servicio o evento en específico que tengas en mente?', chips: DEFAULT_CHIPS };
   }
 
-  function openPanel() {
+  function openPanel(focusInput) {
     panel.hidden = false;
     hint.hidden = true;
     launcher.setAttribute('aria-expanded', 'true');
@@ -167,7 +167,7 @@
       addMessage(GREETING, 'arty', true);
       renderChips(DEFAULT_CHIPS);
     }
-    input.focus();
+    if (focusInput !== false) input.focus();
   }
 
   function closePanel() {
@@ -314,11 +314,9 @@
     document.addEventListener(eventName, greetOnFirstInteraction, { once: true, passive: true });
   });
 
-  window.setTimeout(function () {
-    if (panel.hidden) hint.hidden = false;
-  }, 900);
-
+  /* El chat se abre al entrar; la voz espera al primer clic por política del navegador. */
   window.setTimeout(function () {
     hint.hidden = true;
-  }, 9000);
+    if (panel.hidden) openPanel(false);
+  }, 600);
 })();
