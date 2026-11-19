@@ -128,13 +128,22 @@ elegido: N/D**. Es decir, Google evaluó la versión anterior a nuestro deploy d
 La URL actual sí responde 200, lleva canonical propio, `index, follow`, un H1,
 JSON-LD, está en el sitemap y recibe enlaces desde las otras 5 páginas.
 
-**Acción:** pulsar *Solicitar indexación* en esa URL para que Google rastree la
-versión nueva. Esperar unos días y volver a inspeccionar.
+**Acción ejecutada:** se solicitó indexación de las 6 URLs del sitemap y las
+solicitudes fueron aceptadas (2026-11-18). Falta que Google efectúe el nuevo
+rastreo y reevalúe la versión publicada.
 
-**Si sigue sin indexar:** reforzar el valor único de esa página con información
-real (equipamiento, tipos de evento, coordinación DMX, cobertura), sin inventar
-casos ni rellenar con palabras clave. El contenido actual ya es distinto al de
-las otras páginas de servicio, así que no hay riesgo de duplicado.
+**Nota sobre el error de conexión:** la inspección mostró *"No se ha podido
+conectar al servidor"* a las 19:03:50, pero las pruebas con user-agent de
+Googlebot (smartphone Android e iPhone) devuelven 200 en las 6 URLs. Fue un
+fallo puntual de la herramienta de inspección, no un bloqueo del sitio.
+
+**Si tras el nuevo rastreo sigue sin indexar:** hay un riesgo real de duplicidad.
+La estructura HTML de las 5 páginas de servicio es 85-91 % idéntica y tres de
+ellas comparten `assets/optimized/hero.webp` como imagen principal. Google
+llegó a elegir `/dj-bodas-bogota` como canónica de `/iluminacion-eventos-bogota`.
+El siguiente paso sería usar `assets/optimized/iluminacion.webp` en esa página
+y ampliar sus textos y FAQs con información real ya existente en el sitio, sin
+cambiar diseño ni funcionalidad y sin inventar casos ni rellenar palabras clave.
 
 ---
 
