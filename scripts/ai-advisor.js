@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 /**
  * ARTY · Razonamiento (opcional)
  * ---------------------------------------------------------------

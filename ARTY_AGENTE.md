@@ -102,7 +102,24 @@ GEMINI_API_KEY=tu_clave
 OPENAI_API_KEY=tu_clave
 ```
 
-El agente intenta Gemini primero, luego OpenAI, y cae al modo determinista si fallan. Las claves **nunca** se escriben en el sitio ni en los reportes.
+**Cómo conseguir la clave de Gemini (recomendado):**
+
+1. Entrar a https://aistudio.google.com/apikey con tu cuenta de Google.
+2. *Crear clave de API* → copiar la clave.
+3. Guardarla en `D:\ARTYENTO\artyento\.env` como `GEMINI_API_KEY=...`.
+4. Ejecutar `npm run seo:ai` y revisar `reports/seo-audit.md`: debe aparecer
+   `provider: Gemini 2.0 Flash`.
+
+**Costo:**
+
+- Search Console, el build de Cloudflare y todo el módulo SEO son **gratis**.
+- Gemini tiene una **capa gratuita** con límites de uso más que suficientes para
+  una o varias ejecuciones diarias de ARTY. No requiere tarjeta en la capa gratuita.
+- OpenAI `gpt-4o-mini` es de **pago**, pero el consumo aquí es insignificante:
+  un prompt de unas pocas miles de tokens por ejecución.
+- Si no hay clave o falla la llamada, ARTY cae al modo determinista **sin costo**.
+
+El agente intenta Gemini primero, luego OpenAI, y cae al modo determinista si fallan. Las claves **nunca** se escriben en el sitio ni en los reportes. Los scripts cargan `.env` automáticamente mediante `dotenv`.
 
 Reglas fijas del prompt de ARTY:
 

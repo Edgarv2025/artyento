@@ -240,15 +240,26 @@ ID interno (kgmid): `/g/11zz48479v`.
 
 ## 5. Proveedor de IA para ARTY (opcional)
 
-Sin clave, ARTY funciona en modo determinista. Para activar razonamiento:
+Sin clave, ARTY funciona en modo determinista y **no cuesta nada**. El SEO, la
+indexación y el build de Cloudflare tampoco tienen costo.
+
+Para activar razonamiento:
+
+1. Entrar a https://aistudio.google.com/apikey con tu cuenta de Google.
+2. Crear una clave de API y copiarla.
+3. Guardarla en `D:\ARTYENTO\artyento\.env` (ignorado por Git):
 
 ```ini
-# .env
-GEMINI_API_KEY=tu_clave        # se intenta primero; Gemini 2.0 Flash tiene capa gratuita
-OPENAI_API_KEY=tu_clave        # respaldo si Gemini falla
+GEMINI_API_KEY=tu_clave        # se intenta primero; capa gratuita suficiente
+OPENAI_API_KEY=tu_clave        # respaldo opcional, de pago pero consumo mínimo
 ```
 
-Luego: `npm run seo:ai`. Las claves nunca se escriben en el sitio ni en los reportes.
+4. Ejecutar `npm run seo:ai` y verificar en `reports/seo-audit.md` que aparece
+   `provider: Gemini 2.0 Flash`.
+
+La clave la puedes pegar aquí y yo la escribo en el `.env`, o crear el archivo
+tú mismo. No puedo generarla yo: requiere tu inicio de sesión en Google. Las
+claves nunca se escriben en el sitio ni en los reportes.
 
 ---
 
