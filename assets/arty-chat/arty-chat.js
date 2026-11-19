@@ -8,8 +8,8 @@
   var WA = 'https://wa.me/573202459032?text=' + encodeURIComponent('¡Hola! Quiero cotizar un evento con Artes y Entretenimiento.');
   var AVATAR = 'assets/arty/arty-badge.webp';
 
-  var GREETING = '¡Hola! Qué gusto saludarte por acá. Soy Arty, Gestor de Experiencias en Artes y Entretenimiento. ¿Qué celebración tienes en mente?';
-  var VOICE_GREETING = '¡Hola! Soy Arty, Gestor de Experiencias en Artes y Entretenimiento. Cuéntame, ¿qué celebración tienes en mente?';
+  var GREETING = '¡Hola, hola! Qué gusto saludarte por acá 😄 Soy Arty, Gestor de Experiencias en Artes y Entretenimiento. ¿Qué celebración tienes en mente?';
+  var VOICE_GREETING = '¡Hola, hola! Soy Arty, Gestor de Experiencias en Artes y Entretenimiento. Cuéntame, ¿qué celebración tienes en mente?';
 
   var ROUTES = {
     inicio: { label: 'Inicio', url: '/' },
@@ -79,12 +79,13 @@
     return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
-  function addMessage(text, who) {
+  function addMessage(text, who, alreadySpoken) {
     var item = document.createElement('p');
     item.className = 'arty-msg arty-msg--' + (who === 'user' ? 'user' : 'arty');
     item.textContent = text;
     log.appendChild(item);
     log.scrollTop = log.scrollHeight;
+    if (who !== 'user' && !alreadySpoken) speakOnce(text);
   }
 
   function renderChips(keys) {
@@ -100,6 +101,20 @@
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
       }
+      link.addEventListener('click', function (event) {
+        if (route.url === WA) {
+          speakOnce('Listo, de una. Te dejo el enlace para cotizar por WhatsApp.');
+          return;
+        }
+        event.preventDefault();
+        var answer = replyFor(route.label);
+        addMessage(route.label, 'user');
+        addMessage(answer.text, 'arty', true);
+        renderChips(answer.chips);
+        speakThen(answer.text, function () {
+          window.location.href = route.url;
+        });
+      });
       chipsBox.appendChild(link);
     });
   }
@@ -108,39 +123,39 @@
     var text = normalize(message);
 
     if (/quien eres|eres persona|eres una persona|eres humano|eres un bot/.test(text)) {
-      return { text: '¡Hola! Estoy aquí para atenderte directamente y ayudarte con todo lo que necesites para tu evento.', chips: DEFAULT_CHIPS };
+      return { text: '¡Hola! Estoy aquí para atenderte directamente y ayudarte con todo lo que necesites para tu evento. ¿Qué celebración tienes en mente?', chips: DEFAULT_CHIPS };
     }
     if (/hola|buenas|que tal|hey/.test(text)) {
-      return { text: '¡Hola! Qué gusto saludarte por acá. Soy Arty, Gestor de Experiencias. ¿Qué celebración tienes en mente?', chips: DEFAULT_CHIPS };
+      return { text: '¡Hola, hola! ¿Qué gusto saludarte por acá 😄 Soy Arty, Gestor de Experiencias en Artes y Entretenimiento. ¿Cómo va todo por allá?', chips: DEFAULT_CHIPS };
     }
     if (/cuanto|precio|cotiz|valor|presupuesto/.test(text)) {
-      return { text: '¡Claro que sí, con todo gusto! Para darte la info exacta, cuéntame: ¿para qué fecha y en qué ciudad o zona sería el evento?', chips: ['whatsapp', 'dj', 'sonido', 'iluminacion'] };
+      return { text: '¡Uy, con todo gusto! Para darte la info exacta, cuéntame: ¿para qué fecha y en qué ciudad o zona sería el evento?', chips: ['whatsapp', 'dj', 'sonido', 'iluminacion'] };
     }
     if (/disponibilidad|fecha|agenda|diciembre|puente/.test(text)) {
-      return { text: 'Listo, de una. Para revisar eso con precisión, dime la fecha exacta o el puente festivo y la ciudad o zona del evento.', chips: ['whatsapp', 'bodas', 'empresas'] };
+      return { text: '¡Listo, de una! Para revisar eso con precisión, dime la fecha exacta o el puente festivo y la ciudad o zona del evento.', chips: ['whatsapp', 'bodas', 'empresas'] };
     }
     if (/boda|matrimonio|novios/.test(text)) {
-      return { text: '¡Qué emoción! En bodas cuidamos cada detalle: sonido, iluminación cálida y el protocolo musical para que la pista nunca se pare. ¿Me cuentas la fecha y el lugar?', chips: ['bodas', 'iluminacion', 'whatsapp'] };
+      return { text: '¡Ay, qué nota! En bodas cuidamos cada detalle: sonido, iluminación cálida y el protocolo musical para que la pista nunca se pare. ¿Me cuentas la fecha y el lugar?', chips: ['bodas', 'iluminacion', 'whatsapp'] };
     }
     if (/iluminacion|luces|laser|led/.test(text)) {
-      return { text: 'Con todo gusto. Para darte el montaje adecuado, cuéntame si es salón, hacienda o casa y cuántos invitados esperas.', chips: ['iluminacion', 'bodas', 'whatsapp'] };
+      return { text: '¡De una! Para darte el montaje adecuado, cuéntame si es salón, hacienda o casa y cuántos invitados esperas.', chips: ['iluminacion', 'bodas', 'whatsapp'] };
     }
     if (/sonido|audio|microfono/.test(text)) {
-      return { text: 'Listo, de eso nos encargamos. Dime si necesitas sonido para ceremonia, conferencia o pista, y te oriento mejor.', chips: ['sonido', 'empresas', 'whatsapp'] };
+      return { text: '¡Listo! Tranquilo, de eso nos encargamos. Dime si necesitas sonido para ceremonia, conferencia o pista, y te oriento mejor.', chips: ['sonido', 'empresas', 'whatsapp'] };
     }
     if (/empresa|corporativo|convencion|gala|btl/.test(text)) {
       return { text: '¡De una! Para eventos empresariales combinamos sonido cristalino para las charlas y una rumba de integración a la altura.', chips: ['empresas', 'sonido', 'whatsapp'] };
     }
     if (/dj|musica|show/.test(text)) {
-      return { text: 'Claro que sí. Nuestro DJ lee la pista y arma el recorrido musical según tu celebración. ¿Qué fecha tienes en mente?', chips: ['dj', 'bodas', 'whatsapp'] };
+      return { text: '¡Claro que sí! Nuestro DJ lee la pista y arma el recorrido musical según tu celebración. ¿Qué fecha tienes en mente?', chips: ['dj', 'bodas', 'whatsapp'] };
     }
     if (/gracias|adios|hasta luego/.test(text)) {
-      return { text: 'Cualquier cosa que necesites de camino a la fecha, aquí estaré a la orden. ¡Que tengas un excelente día!', chips: [] };
+      return { text: '¡Con todo gusto! Cualquier cosa que necesites de camino a la fecha, aquí estaré a la orden. ¡Que tengas un excelente día!', chips: [] };
     }
     if (/whatsapp|hablar|asesor|agendar/.test(text)) {
-      return { text: 'Listo, de una. Te dejo el enlace para que hablemos directamente y fijemos la fecha.', chips: ['whatsapp'] };
+      return { text: '¡Listo, de una! Te dejo el enlace para que hablemos directamente y fijemos la fecha.', chips: ['whatsapp'] };
     }
-    return { text: '¡Hola, qué tal! Cuéntame, ¿llegaste por algún servicio o evento en específico que tengas en mente?', chips: DEFAULT_CHIPS };
+    return { text: '¡Hola, qué más! Cuéntame, ¿llegaste por algún servicio o evento en específico que tengas en mente?', chips: DEFAULT_CHIPS };
   }
 
   function openPanel() {
@@ -149,7 +164,7 @@
     launcher.setAttribute('aria-expanded', 'true');
     if (!started) {
       started = true;
-      addMessage(GREETING, 'arty');
+      addMessage(GREETING, 'arty', true);
       renderChips(DEFAULT_CHIPS);
     }
     input.focus();
@@ -179,48 +194,105 @@
     }, 220);
   });
 
-  /* Voz: se elige la mejor opción española disponible y se ajusta a un tono juvenil y alegre. */
+  /* Voz: hombre joven, alegre y expresivo. Se prefieren voces masculinas del dispositivo. */
+  var MALE_VOICE_NAMES = [
+    'jorge', 'diego', 'pablo', 'bernardo', 'hector', 'héctor', 'raul', 'raúl',
+    'gustavo', 'juan', 'fernando', 'alejandro', 'daniel', 'sebastian', 'sebastián',
+    'tomás', 'tomas', 'google espanol hombre', 'google español hombre'
+  ];
+
   function pickVoice() {
-    if (!('speechSynthesis' in window)) return null;
+    if (!('speechSynthesis' in window)) return { voice: null, male: false };
     var voices = window.speechSynthesis.getVoices().filter(function (voice) {
       return /^es/i.test(voice.lang);
     });
-    var preferredLangs = ['es-CO', 'es-419', 'es-MX', 'es-AR', 'es-ES'];
+
+    var maleVoice = voices.filter(function (voice) {
+      var name = voice.name.toLowerCase();
+      return MALE_VOICE_NAMES.some(function (candidate) {
+        return name.indexOf(candidate) !== -1;
+      });
+    })[0];
+    if (maleVoice) return { voice: maleVoice, male: true };
+
+    var preferredLangs = ['es-MX', 'es-CO', 'es-419', 'es-AR', 'es-ES'];
     for (var i = 0; i < preferredLangs.length; i += 1) {
       var byLang = voices.filter(function (voice) {
         return voice.lang.toLowerCase().replace('_', '-') === preferredLangs[i].toLowerCase();
       })[0];
-      if (byLang) return byLang;
+      if (byLang) return { voice: byLang, male: false };
     }
-    var preferredNames = ['helena', 'lucia', 'monica', 'paulina', 'elvira', 'google espanol', 'google español'];
-    for (var j = 0; j < preferredNames.length; j += 1) {
-      var byName = voices.filter(function (voice) {
-        return voice.name.toLowerCase().indexOf(preferredNames[j]) !== -1;
-      })[0];
-      if (byName) return byName;
-    }
-    return voices[0] || null;
+    return { voice: voices[0] || null, male: false };
   }
 
-  function speak(text) {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    var utterance = new SpeechSynthesisUtterance(text);
-    var voice = pickVoice();
-    if (voice) {
-      utterance.voice = voice;
-      utterance.lang = voice.lang;
-    } else {
-      utterance.lang = 'es-CO';
+  function splitExpressive(text) {
+    var parts = String(text).match(/[^.!?]+[.!?]+/g) || [String(text)];
+    return parts.map(function (part) {
+      return part.trim();
+    }).filter(Boolean);
+  }
+
+  function speak(text, onDone) {
+    if (!('speechSynthesis' in window)) {
+      if (typeof onDone === 'function') onDone();
+      return;
     }
-    utterance.rate = 1.06;
-    utterance.pitch = 1.2;
-    utterance.volume = 0.9;
-    window.speechSynthesis.speak(utterance);
+    window.speechSynthesis.cancel();
+
+    var selection = pickVoice();
+    var segments = /^¡/.test(String(text)) ? splitExpressive(text) : [text];
+
+    segments.forEach(function (segment, index) {
+      var utterance = new SpeechSynthesisUtterance(segment);
+      var voice = selection.voice;
+      if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
+      } else {
+        utterance.lang = 'es-MX';
+      }
+      var first = index === 0;
+      var bouncy = index % 2 === 1;
+      utterance.pitch = selection.male
+        ? (first ? 1.32 : (bouncy ? 1.12 : 1.22))
+        : (first ? 1.12 : (bouncy ? 1 : 1.06));
+      utterance.rate = selection.male
+        ? (first ? 1.22 : (bouncy ? 1.08 : 1.16))
+        : 1.08;
+      utterance.volume = 1;
+      if (index === segments.length - 1 && typeof onDone === 'function') {
+        utterance.onend = onDone;
+      }
+      window.speechSynthesis.speak(utterance);
+    });
+  }
+
+  var lastSpoken = { text: '', at: 0 };
+
+  function speakOnce(text, onDone) {
+    var now = Date.now();
+    if (lastSpoken.text === text && now - lastSpoken.at < 1200) {
+      if (typeof onDone === 'function') onDone();
+      return;
+    }
+    lastSpoken = { text: text, at: now };
+    speak(text, onDone);
+  }
+
+  /* Arty lee la respuesta y solo entonces lleva al usuario a la sección elegida. */
+  function speakThen(text, callback) {
+    var finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      callback();
+    }
+    speakOnce(text, finish);
+    window.setTimeout(finish, 8000);
   }
 
   panel.querySelector('.arty-js-voice').addEventListener('click', function () {
-    speak(VOICE_GREETING);
+    speakOnce(VOICE_GREETING);
   });
 
   /* Los navegadores impiden reproducir audio automáticamente: el saludo suena tras el primer clic. */
@@ -231,7 +303,7 @@
     try {
       if (window.sessionStorage.getItem('arty-voice') !== 'hecho') {
         window.sessionStorage.setItem('arty-voice', 'hecho');
-        speak(VOICE_GREETING);
+        speakOnce(VOICE_GREETING);
       }
     } catch (error) {
       /* Sin almacenamiento: se omite el guardado, el saludo igual se reproduce. */

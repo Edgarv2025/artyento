@@ -33,11 +33,25 @@ flotante en las 6 páginas. Arty saluda, pregunta qué celebración tienes en me
 y ofrece enlaces a DJ, sonido, iluminación, bodas, empresariales y WhatsApp.
 Es una guía determinista: no llama a la API ni expone claves en el navegador.
 
-El saludo hablado usa la voz del navegador, con tono juvenil y alegre
-(tono 1.2, ritmo 1.06 y prioridad para voces `es-CO`, `es-419` o `es-MX`).
-Los navegadores bloquean el audio automático, así que suena tras el primer clic
-o cuando pulsas el icono de altavoz. La voz exacta depende del dispositivo; para
-un timbre idéntico en todos haría falta un audio grabado.
+Arty **lee en voz alta cada respuesta automáticamente**: no hay que pulsar el
+botón de altavoz. Al elegir una opción, la voz termina de hablar y entonces el
+navegador lleva al usuario a la sección correspondiente.
+
+La voz buscada es de **hombre joven, alegre y muy expresivo**, con energía de
+doblaje de dibujos animados pero **original**: no se copia la voz del Burro de
+Shrek ni de otro personaje protegido. Se priorizan voces masculinas en español
+(`Jorge`, `Diego`, `Pablo`, `Héctor`, `Raúl`, `Gustavo`, etc.). Cada frase se
+pronuncia con altibajos de tono (1.32 en el arranque, 1.12 y 1.22 en las
+siguientes) y ritmo ágil (1.22, 1.08 y 1.16) para lograr expresiones vivas.
+
+El lenguaje es colombiano y natural: “¡Hola, hola!”, “¿Qué más?”, “¡De una!”,
+“Con todo gusto”, “¡Uy, qué nota!”, “Tranquilo, de eso nos encargamos” y
+“¿Cómo va todo por allá?”.
+
+Los navegadores bloquean el audio automático, así que el primer saludo suena
+tras el primer clic. Si el dispositivo no tiene voz masculina en español, se usa
+la disponible con tono más grave. Para un timbre idéntico en todos los equipos
+haría falta un audio grabado por un locutor con ese estilo.
 
 ### d) Atención en WhatsApp
 
