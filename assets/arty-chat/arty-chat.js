@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  if (window.__artyGuideLoaded) return;
+  if (window.__artyGuideLoaded || document.getElementById('arty-guide-panel')) return;
   window.__artyGuideLoaded = true;
 
   var WA = 'https://wa.me/573202459032?text=' + encodeURIComponent('¡Hola! Quiero cotizar un evento con Artes y Entretenimiento.');
@@ -34,18 +34,21 @@
 
   var launcher = document.createElement('button');
   launcher.type = 'button';
+  launcher.id = 'arty-guide-launcher';
   launcher.className = 'arty-launcher';
   launcher.setAttribute('aria-label', 'Abrir guía con Arty');
   launcher.setAttribute('aria-expanded', 'false');
   launcher.innerHTML = '<img src="' + AVATAR + '" alt="" aria-hidden="true">';
 
   var hint = document.createElement('div');
+  hint.id = 'arty-guide-hint';
   hint.className = 'arty-hint';
   hint.setAttribute('aria-hidden', 'true');
   hint.hidden = true;
   hint.textContent = '¡Hola! Soy Arty 👋';
 
   var panel = document.createElement('section');
+  panel.id = 'arty-guide-panel';
   panel.className = 'arty-panel';
   panel.hidden = true;
   panel.setAttribute('aria-label', 'Guía de Arty dentro del sitio');
@@ -62,6 +65,14 @@
     '<input class="arty-panel__input arty-js-input" type="text" maxlength="180" autocomplete="off" placeholder="Cuéntame qué necesitas...">',
     '<button type="submit" class="arty-panel__send" aria-label="Enviar">➤</button>',
     '</form>',
+    '<div class="arty-panel__lead">',
+    '<label class="arty-panel__lead-label" for="arty-phone">Tu número para el resumen</label>',
+    '<div class="arty-panel__lead-row">',
+    '<input id="arty-phone" class="arty-panel__phone arty-js-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="3001234567" autocomplete="tel">',
+    '<button type="button" class="arty-panel__summary arty-js-summary">Enviar resumen</button>',
+    '</div>',
+    '<small class="arty-panel__consent">Usamos tu número solo para enviarte la cotización.</small>',
+    '</div>',
     '<div class="arty-panel__foot"><a href="', WA, '" target="_blank" rel="noopener noreferrer">Cotizar por WhatsApp ↗</a></div>'
   ].join('');
 
@@ -73,10 +84,20 @@
   var chipsBox = panel.querySelector('.arty-js-chips');
   var form = panel.querySelector('.arty-js-form');
   var input = panel.querySelector('.arty-js-input');
+  var phoneInput = panel.querySelector('.arty-js-phone');
+  var summaryButton = panel.querySelector('.arty-js-summary');
+  var transcript = [];
   var started = false;
+  var navigating = false;
 
   function normalize(value) {
     return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function goTo(url) {
+    if (navigating) return;
+    navigating = true;
+    window.location.href = url;
   }
 
   function addMessage(text, who, alreadySpoken) {
@@ -85,6 +106,7 @@
     item.textContent = text;
     log.appendChild(item);
     log.scrollTop = log.scrollHeight;
+    transcript.push({ who: who, text: text, at: new Date().toISOString() });
     if (who !== 'user' && !alreadySpoken) speakOnce(text);
   }
 
@@ -112,7 +134,7 @@
         addMessage(answer.text, 'arty', true);
         renderChips(answer.chips);
         speakThen(answer.text, function () {
-          window.location.href = route.url;
+          goTo(route.url);
         });
       });
       chipsBox.appendChild(link);
@@ -162,6 +184,11 @@
     panel.hidden = false;
     hint.hidden = true;
     launcher.setAttribute('aria-expanded', 'true');
+    try {
+      window.sessionStorage.setItem('arty-chat-opened', '1');
+    } catch (error) {
+      /* Sin almacenamiento: el chat sigue funcionando normalmente. */
+    }
     if (!started) {
       started = true;
       addMessage(GREETING, 'arty', true);
@@ -192,6 +219,35 @@
       addMessage(answer.text, 'arty');
       renderChips(answer.chips);
     }, 220);
+  });
+
+  function onlyDigits(value) {
+    return String(value || '').replace(/\D/g, '');
+  }
+
+  summaryButton.addEventListener('click', function () {
+    var phone = onlyDigits(phoneInput.value);
+    if (!/^3\d{9}$/.test(phone)) {
+      addMessage('¡Uy! Escribe un número móvil colombiano de 10 dígitos, por ejemplo 3001234567.', 'arty');
+      phoneInput.focus();
+      return;
+    }
+
+    var recent = transcript.slice(-20);
+    var lines = recent.map(function (entry) {
+      return (entry.who === 'user' ? 'Cliente' : 'Arty') + ': ' + entry.text;
+    });
+    var summary = [
+      '📝 Resumen de conversación con Arty',
+      'Cliente: +57 ' + phone,
+      'Fecha: ' + new Date().toLocaleString('es-CO'),
+      '',
+      lines.join('\n')
+    ].join('\n');
+    var url = 'https://wa.me/573202459032?text=' + encodeURIComponent(summary);
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+    addMessage('¡Listo! Se abrió WhatsApp con el resumen. Envíalo y nuestro equipo lo recibe al instante. 🙌', 'arty');
   });
 
   /* Voz: hombre joven, alegre y expresivo. Se prefieren voces masculinas del dispositivo. */
@@ -335,9 +391,15 @@
     document.addEventListener(eventName, greetOnFirstInteraction, { once: true, passive: true });
   });
 
-  /* El chat se abre al entrar; la voz espera al primer clic por política del navegador. */
+  /* Se abre una sola vez por sesión: evita que se multiplique al navegar en móvil. */
+  var alreadyOpened = false;
+  try {
+    alreadyOpened = window.sessionStorage.getItem('arty-chat-opened') === '1';
+  } catch (error) {
+    alreadyOpened = false;
+  }
   window.setTimeout(function () {
     hint.hidden = true;
-    if (panel.hidden) openPanel(false);
+    if (!alreadyOpened && panel.hidden) openPanel(false);
   }, 600);
 })();

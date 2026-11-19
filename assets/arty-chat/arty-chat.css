@@ -6,6 +6,12 @@
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+.arty-launcher,
+.arty-panel button,
+.arty-chip {
+  touch-action: manipulation;
+}
+
 .arty-launcher {
   position: fixed;
   right: 20px;
@@ -147,6 +153,8 @@
   overflow-y: auto;
   padding: 14px;
   scrollbar-width: thin;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .arty-msg {
@@ -229,8 +237,70 @@
   cursor: pointer;
 }
 
+.arty-panel__lead {
+  padding: 10px 12px 4px;
+  border-top: 1px solid rgba(201, 168, 92, .18);
+}
+
+.arty-panel__lead-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #e8c977;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.arty-panel__lead-row {
+  display: flex;
+  gap: 6px;
+}
+
+.arty-panel__phone {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 9px;
+  background: #191920;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.arty-panel__phone:focus {
+  border-color: #c9a85c;
+  outline: none;
+}
+
+.arty-panel__summary {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: #c9a85c;
+  color: #0a0a0d;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.arty-panel__summary:hover,
+.arty-panel__summary:focus-visible {
+  filter: brightness(1.08);
+  outline: none;
+}
+
+.arty-panel__consent {
+  display: block;
+  margin-top: 6px;
+  color: #9b9588;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
 .arty-panel__foot {
-  padding: 0 12px 12px;
+  padding: 6px 12px 12px;
   text-align: center;
 }
 

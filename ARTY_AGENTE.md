@@ -28,11 +28,19 @@ las salidas son más naturales; sin clave funciona en modo determinista.
 
 ### c) Guía dentro de la web
 
-`assets/arty-chat/arty-chat.js` abre automáticamente el chat al cargar cualquiera
-de las 6 páginas y deja un botón flotante para cerrarlo o volver a abrirlo. Arty
-saluda, pregunta qué celebración tienes en mente y ofrece enlaces a DJ, sonido,
-iluminación, bodas, empresariales y WhatsApp. Es una guía determinista: no llama
-a la API ni expone claves en el navegador.
+`assets/arty-chat/arty-chat.js` abre el chat una sola vez por sesión (para que no
+se multiplique en móvil al navegar) y deja un botón flotante para cerrarlo o
+volver a abrirlo. Arty saluda, pregunta qué celebración tienes en mente y ofrece
+enlaces a DJ, sonido, iluminación, bodas, empresariales y WhatsApp. Es una guía
+determinista: no llama a la API ni expone claves en el navegador.
+
+El panel incluye un campo para capturar el número del cliente. Al pulsar
+**Enviar resumen**, se abre WhatsApp con el número validado (+57, 10 dígitos) y
+la conversación reciente lista para enviar al número corporativo
+**+57 320 245 9032**. El cliente debe confirmar el envío: el sitio no envía
+mensajes por su cuenta. Para trazabilidad **automática en tiempo real** se
+necesita la API de WhatsApp Business y un backend/Worker con credenciales de
+Meta.
 
 Arty **lee en voz alta cada respuesta automáticamente**: no hay que pulsar el
 botón de altavoz. Al elegir una opción, la voz termina de hablar y entonces el
