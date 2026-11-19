@@ -5,6 +5,7 @@ const seo = require('./server/services/seoService');
 const root = __dirname;
 const publicDir = path.join(root, 'public');
 const files = [
+  '_headers',
   'admin.html',
   '404.html',
   'datos.js',

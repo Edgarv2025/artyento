@@ -96,6 +96,11 @@
   display: none !important;
 }
 
+/* El panel solo aparece cuando el JS lo abre con esta clase. */
+.arty-panel:not(.arty-panel--open) {
+  display: none !important;
+}
+
 .arty-panel__head {
   display: flex;
   align-items: center;

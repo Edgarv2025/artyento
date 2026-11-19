@@ -1,0 +1,29 @@
+# El HTML se revalida siempre para que los cambios se vean al instante.
+# Los assets (CSS/JS/imágenes) conservan su caché y se versionan con ?v=N.
+
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/admin.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/404.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/dj-bogota
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/sonido-eventos-bogota
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/iluminacion-eventos-bogota
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/dj-bodas-bogota
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/eventos-empresariales-bogota
+  Cache-Control: no-cache, no-store, must-revalidate

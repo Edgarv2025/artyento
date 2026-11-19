@@ -209,6 +209,7 @@
 
   function openPanel(focusInput) {
     panel.hidden = false;
+    panel.classList.add('arty-panel--open');
     hint.hidden = true;
     launcher.setAttribute('aria-expanded', 'true');
     if (!started) {
@@ -220,9 +221,15 @@
   }
 
   function closePanel() {
+    panel.classList.remove('arty-panel--open');
     panel.hidden = true;
     launcher.setAttribute('aria-expanded', 'false');
   }
+
+  /* Si el navegador restaura la página desde caché, el panel vuelve cerrado. */
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) closePanel();
+  });
 
   launcher.addEventListener('click', function () {
     if (panel.hidden) openPanel(); else closePanel();
