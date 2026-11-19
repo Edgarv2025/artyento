@@ -38,12 +38,13 @@ Arty **lee en voz alta cada respuesta automáticamente**: no hay que pulsar el
 botón de altavoz. Al elegir una opción, la voz termina de hablar y entonces el
 navegador lleva al usuario a la sección correspondiente.
 
-La voz buscada es de **hombre joven, alegre y muy expresivo**, con energía de
+La voz buscada es de **hombre joven, alegre y expresivo**, con energía de
 doblaje de dibujos animados pero **original**: no se copia la voz del Burro de
 Shrek ni de otro personaje protegido. Se priorizan voces masculinas en español
-(`Jorge`, `Diego`, `Pablo`, `Héctor`, `Raúl`, `Gustavo`, etc.). Cada frase se
-pronuncia con altibajos de tono (1.32 en el arranque, 1.12 y 1.22 en las
-siguientes) y ritmo ágil (1.22, 1.08 y 1.16) para lograr expresiones vivas.
+y, dentro de ellas, las etiquetadas como `natural`, `neural`, `premium` u
+`online`. La modulación es suave (tono 1.10 al inicio y 1.06 después, ritmo
+1.06 y 1.02) con una pausa breve entre frases, para evitar el sonido metálico
+de los saltos bruscos de tono.
 
 El lenguaje es colombiano y natural: “¡Hola, hola!”, “¿Qué más?”, “¡De una!”,
 “Con todo gusto”, “¡Uy, qué nota!”, “Tranquilo, de eso nos encargamos” y
@@ -51,8 +52,10 @@ El lenguaje es colombiano y natural: “¡Hola, hola!”, “¿Qué más?”, �
 
 Los navegadores bloquean el audio automático, así que el primer saludo suena
 tras el primer clic. Si el dispositivo no tiene voz masculina en español, se usa
-la disponible con tono más grave. Para un timbre idéntico en todos los equipos
-haría falta un audio grabado por un locutor con ese estilo.
+la disponible con tono más grave. La voz del navegador siempre conserva un matiz
+sintético: para un timbre idéntico en todos los equipos **y sin sonido
+robótico**, haría falta un audio grabado por un locutor joven colombiano con ese
+estilo.
 
 ### d) Atención en WhatsApp
 

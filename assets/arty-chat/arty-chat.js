@@ -200,29 +200,38 @@
     'gustavo', 'juan', 'fernando', 'alejandro', 'daniel', 'sebastian', 'sebastián',
     'tomás', 'tomas', 'google espanol hombre', 'google español hombre'
   ];
+  var NATURAL_VOICE_HINTS = ['natural', 'neural', 'premium', 'online', 'google'];
 
   function pickVoice() {
-    if (!('speechSynthesis' in window)) return { voice: null, male: false };
+    if (!('speechSynthesis' in window)) return { voice: null, male: false, natural: false };
     var voices = window.speechSynthesis.getVoices().filter(function (voice) {
       return /^es/i.test(voice.lang);
     });
 
-    var maleVoice = voices.filter(function (voice) {
+    var maleVoices = voices.filter(function (voice) {
       var name = voice.name.toLowerCase();
       return MALE_VOICE_NAMES.some(function (candidate) {
         return name.indexOf(candidate) !== -1;
       });
+    });
+
+    var naturalMale = maleVoices.filter(function (voice) {
+      var name = voice.name.toLowerCase();
+      return NATURAL_VOICE_HINTS.some(function (hint) {
+        return name.indexOf(hint) !== -1;
+      });
     })[0];
-    if (maleVoice) return { voice: maleVoice, male: true };
+    if (naturalMale) return { voice: naturalMale, male: true, natural: true };
+    if (maleVoices[0]) return { voice: maleVoices[0], male: true, natural: false };
 
     var preferredLangs = ['es-MX', 'es-CO', 'es-419', 'es-AR', 'es-ES'];
     for (var i = 0; i < preferredLangs.length; i += 1) {
       var byLang = voices.filter(function (voice) {
         return voice.lang.toLowerCase().replace('_', '-') === preferredLangs[i].toLowerCase();
       })[0];
-      if (byLang) return { voice: byLang, male: false };
+      if (byLang) return { voice: byLang, male: false, natural: false };
     }
-    return { voice: voices[0] || null, male: false };
+    return { voice: voices[0] || null, male: false, natural: false };
   }
 
   function splitExpressive(text) {
@@ -241,9 +250,19 @@
 
     var selection = pickVoice();
     var segments = /^¡/.test(String(text)) ? splitExpressive(text) : [text];
+    var index = 0;
 
-    segments.forEach(function (segment, index) {
-      var utterance = new SpeechSynthesisUtterance(segment);
+    function finish() {
+      if (typeof onDone === 'function') onDone();
+    }
+
+    function next() {
+      if (index >= segments.length) {
+        finish();
+        return;
+      }
+
+      var utterance = new SpeechSynthesisUtterance(segments[index]);
       var voice = selection.voice;
       if (voice) {
         utterance.voice = voice;
@@ -251,20 +270,22 @@
       } else {
         utterance.lang = 'es-MX';
       }
-      var first = index === 0;
-      var bouncy = index % 2 === 1;
-      utterance.pitch = selection.male
-        ? (first ? 1.32 : (bouncy ? 1.12 : 1.22))
-        : (first ? 1.12 : (bouncy ? 1 : 1.06));
-      utterance.rate = selection.male
-        ? (first ? 1.22 : (bouncy ? 1.08 : 1.16))
-        : 1.08;
+
+      /* Modulación suave: se evitan los saltos bruscos de tono que suenan a máquina. */
+      utterance.pitch = selection.male ? (index === 0 ? 1.1 : 1.06) : (index === 0 ? 1.04 : 1);
+      utterance.rate = selection.male ? (index === 0 ? 1.06 : 1.02) : 1.02;
       utterance.volume = 1;
-      if (index === segments.length - 1 && typeof onDone === 'function') {
-        utterance.onend = onDone;
-      }
+
+      index += 1;
+      var advance = function () {
+        window.setTimeout(next, 140);
+      };
+      utterance.onend = advance;
+      utterance.onerror = advance;
       window.speechSynthesis.speak(utterance);
-    });
+    }
+
+    next();
   }
 
   var lastSpoken = { text: '', at: 0 };
