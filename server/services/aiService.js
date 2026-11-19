@@ -1,4 +1,12 @@
 const { getCatalogData } = require('./catalogService');
+const {
+  buildCommercialSystemPrompt,
+  buildWhatsAppSystemPrompt,
+  validateClientMessage
+} = require('./artyPrompt');
+
+const GEMINI_MODEL = 'gemini-3.8-flash';
+const GEMINI_FALLBACK_MODEL = 'gemini-3-flash-preview';
 
 /**
  * Motor de IA para Generación de Contenido Comercial y Publicitario
@@ -240,58 +248,43 @@ Ya sea para ${audienceInfo.nombre.toLowerCase()}, cuidamos cada detalle técnico
   };
 }
 
-async function callGeminiAPI(params) {
-  const systemContext = `Eres el Director Creativo y Copywriter Senior de la empresa de producción musical y técnica "Artes y Entretenimiento" en Bogotá, Colombia.
-Información real de la empresa (NO INVENTAR OTROS PRECIOS NI SERVICIOS):
-- Marca: Artes y Entretenimiento
-- WhatsApp: ${params.catalog.marca.whatsapp} / Tel: ${params.catalog.marca.telefono}
-- Paquete en foco: ${params.selectedPackage.titulo} (Precio: ${params.selectedPackage.precio})
-- Elementos del paquete: ${params.selectedPackage.elementos.join(', ')}
-- Artista en foco: ${params.selectedArtist.nombre} - ${params.selectedArtist.subtitulo} (${params.selectedArtist.descripcion})
-- Público objetivo: ${params.audienceInfo.nombre} (${params.audienceInfo.enfoque})
-- Red social destino: ${params.platform} (${params.contentType})
-- Meta de la campaña: ${params.campaignGoal}
-${params.customInstructions ? `Instrucciones adicionales: ${params.customInstructions}` : ''}
-
-Devuelve EXCLUSIVAMENTE un JSON válido con la siguiente estructura:
-{
-  "title": "Título descriptivo del contenido",
-  "hook": "Gancho de apertura impactante (0-3 segundos o primera línea)",
-  "copy_text": "Texto completo del post formateado con emojis y estructura para la red seleccionada",
-  "cta": "Llamado a la acción claro",
-  "hashtags": "Hashtags estratégicos colombianos",
-  "target_url": "https://api.whatsapp.com/send?phone=${params.catalog.marca.whatsapp}&text=...",
-  "visual_notes": "Recomendación de material visual a usar",
-  "variations": [
-    { "label": "Variación A", "hook": "...", "cta": "..." },
-    { "label": "Variación B", "hook": "...", "cta": "..." }
-  ]
-}`;
-
+async function callGeminiText(prompt, { maxOutputTokens = 1024, temperature = 0.7, thinking = false } = {}) {
   // Llamada REST directa: evita la dependencia @google/generative-ai,
   // que no está instalada y hacía fallar silenciosamente esta rama.
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(process.env.GEMINI_API_KEY)}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: systemContext }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
-      })
+  let lastError = null;
+  for (const model of [GEMINI_MODEL, GEMINI_FALLBACK_MODEL]) {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(process.env.GEMINI_API_KEY)}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature,
+            maxOutputTokens,
+            ...(thinking ? {} : { thinkingConfig: { thinkingBudget: 0 } })
+          }
+        })
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
     }
-  );
-  if (!response.ok) throw new Error(`Gemini API status ${response.status}`);
-  const data = await response.json();
-  const responseText = data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
-  const cleaned = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-  return JSON.parse(cleaned);
+    lastError = new Error(`Gemini ${model} status ${response.status}`);
+    // Si el modelo está saturado (503) o fue retirado (404), probar el respaldo.
+    if (response.status !== 503 && response.status !== 404 && response.status < 500) break;
+  }
+  throw lastError;
 }
 
-async function callOpenAIAPI(params) {
-  // Implementación estándar de fetch hacia OpenAI para evitar dependencias pesadas
-  const prompt = `Eres el Copywriter de Artes y Entretenimiento Bogotá. Genera un contenido comercial en JSON para ${params.platform} enfocado en ${params.selectedPackage.titulo} (${params.selectedPackage.precio}) y ${params.selectedArtist.nombre} para ${params.audienceInfo.nombre}.`;
-  
+async function callGeminiAPI(params) {
+  const text = await callGeminiText(buildCommercialSystemPrompt(params), { maxOutputTokens: 2048 });
+  return JSON.parse(text.replace(/```json/g, '').replace(/```/g, '').trim());
+}
+
+async function callOpenAIText(prompt, { maxTokens = 600, json = false } = {}) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -301,13 +294,81 @@ async function callOpenAIAPI(params) {
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
-      response_format: { type: 'json_object' }
+      ...(json ? { response_format: { type: 'json_object' } } : {})
     })
   });
-
   if (!response.ok) throw new Error(`OpenAI API status ${response.status}`);
   const data = await response.json();
-  return JSON.parse(data.choices[0].message.content);
+  return data.choices[0].message.content || '';
 }
 
-module.exports = { generateCommercialContent };
+async function callOpenAIAPI(params) {
+  const prompt = `${buildCommercialSystemPrompt(params)}\n\nEntrega únicamente el JSON solicitado.`;
+  return JSON.parse((await callOpenAIText(prompt, { maxTokens: 2048, json: true })).replace(/```json/g, '').replace(/```/g, '').trim());
+}
+
+/** Respuesta determinista cuando no hay clave o la respuesta generada no pasa validación. */
+function fallbackWhatsAppReply({ message = '' } = {}) {
+  const text = String(message).toLowerCase().trim();
+
+  if (/(eres (una )?(persona|humana)|eres humano|eres un bot|es real|quien eres)/.test(text)) {
+    return '¡Hola! Estoy aquí para atenderte directamente y ayudarte con todo lo que necesites para tu evento. Cuéntame, ¿qué celebración tienes en mente?';
+  }
+  if (/(precio|cu[aá]nto|cotiz|valor|disponibilidad|fecha|agenda|show|iluminaci[oó]n|sonido|dj)/.test(text)) {
+    return '¡Claro que sí, con todo gusto! Para darte la información exacta, cuéntame: ¿para qué fecha o puente festivo tienes pensado el evento y en qué ciudad o zona?';
+  }
+  if (/^(buenos días|buenas tardes|buenas noches)/.test(text)) {
+    return '¡Qué gusto saludarte! Soy Arty, Gestor de Experiencias en Artes y Entretenimiento. Cuéntame, ¿qué tal va tu día?';
+  }
+  if (/^(hola|buenas|hey|hi|qué tal|como estas)/.test(text)) {
+    return '¡Hola! Qué gusto saludarte por acá. Por aquí te saluda Arty, Gestor de Experiencias en Artes y Entretenimiento. ¿Cómo va todo por allá?';
+  }
+  if (/(proveedor|log[ií]stica|aliado|distribuidor)/.test(text)) {
+    return '¡Ah, de una! Si es un tema de logística o proveedores, déjame te paso de una vez con alguien del equipo para que lo cuadren bien. Dame un segundito.';
+  }
+  if (/(gracias|adi[oó]s|nos vemos|hasta luego)/.test(text)) {
+    return 'Cualquier cosa que necesites de camino a la fecha, aquí estaré a la orden. ¡Que tengas un excelente día!';
+  }
+  return '¡Hola, qué tal! Con todo gusto te ayudo. Cuéntame, ¿llegaste por algún servicio o evento en específico que tengas en mente?';
+}
+
+/** Punto de entrada para el chat de WhatsApp/web. Nunca expone la clave al navegador. */
+async function generateWhatsAppReply({ message = '', history = [], catalog = getCatalogData() } = {}) {
+  let text = '';
+  let provider = 'determinista';
+
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      const prompt = `${buildWhatsAppSystemPrompt({ catalog, history })}\n\nMensaje del cliente: ${message}`;
+      text = (await callGeminiText(prompt, { maxOutputTokens: 1024 })).trim();
+      if (text) provider = 'Gemini Flash';
+    } catch (err) {
+      console.warn(`Fallo Gemini en respuesta de WhatsApp: ${err.message}`);
+    }
+  }
+
+  if (!text && process.env.OPENAI_API_KEY) {
+    try {
+      const prompt = `${buildWhatsAppSystemPrompt({ catalog, history })}\n\nMensaje del cliente: ${message}\nResponde solo el mensaje de Arty.`;
+      text = (await callOpenAIText(prompt, { maxTokens: 512 })).trim();
+      if (text) provider = 'OpenAI gpt-4o-mini';
+    } catch (err) {
+      console.warn(`Fallo OpenAI en respuesta de WhatsApp: ${err.message}`);
+    }
+  }
+
+  let validation = text
+    ? validateClientMessage(text, catalog)
+    : { ok: false, problems: ['sin respuesta del proveedor'] };
+
+  if (!validation.ok) {
+    if (text) console.warn(`Respuesta descartada por validación: ${validation.problems.join('; ')}`);
+    text = fallbackWhatsAppReply({ message });
+    provider = 'determinista (validación)';
+    validation = validateClientMessage(text, catalog);
+  }
+
+  return { text, provider, validation };
+}
+
+module.exports = { generateCommercialContent, generateWhatsAppReply };

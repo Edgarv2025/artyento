@@ -8,7 +8,7 @@
 
 ## 0. Cómo aprovechar ARTY hoy mismo
 
-Aunque la web aún no tiene chat visible, ARTY ya trabaja en varios frentes que puedes usar desde hoy:
+ARTY ya está visible en las 6 páginas como guía flotante y saludo hablado. Además, trabaja en estos frentes que puedes usar desde hoy:
 
 ### a) Revisión diaria de posicionamiento (5 minutos)
 
@@ -26,13 +26,26 @@ Lee tres bloques: **Cola de acciones** (qué hacer primero), **Enfoque local** (
 `datos.js`, `paquetes.js` y la temporada activa. Con la clave de Gemini configurada,
 las salidas son más naturales; sin clave funciona en modo determinista.
 
-### c) Atención en WhatsApp
+### c) Guía dentro de la web
+
+`assets/arty-chat/arty-chat.js` muestra una burbuja de bienvenida y un botón
+flotante en las 6 páginas. Arty saluda, pregunta qué celebración tienes en mente
+y ofrece enlaces a DJ, sonido, iluminación, bodas, empresariales y WhatsApp.
+Es una guía determinista: no llama a la API ni expone claves en el navegador.
+
+El saludo hablado usa la voz del navegador, con tono juvenil y alegre
+(tono 1.2, ritmo 1.06 y prioridad para voces `es-CO`, `es-419` o `es-MX`).
+Los navegadores bloquean el audio automático, así que suena tras el primer clic
+o cuando pulsas el icono de altavoz. La voz exacta depende del dispositivo; para
+un timbre idéntico en todos haría falta un audio grabado.
+
+### d) Atención en WhatsApp
 
 El agente de WhatsApp sigue en desarrollo, pero la lógica de negocio (catálogo,
-paquetes, objeciones y tono de marca) ya existe en el servidor. Es la base para
-cuando decidas conectar un número corporativo.
+paquetes, objeciones y tono de marca) ya existe en `server/services/aiService.js`.
+Es la base para cuando decidas conectar un número corporativo.
 
-### d) Lo que más impacto tiene ahora
+### e) Lo que más impacto tiene ahora
 
 1. Responder las solicitudes de indexación ya enviadas y vigilar `/iluminacion-eventos-bogota`.
 2. Mantener reseñas reales y fotos nuevas en el Perfil de Negocio de Google.
@@ -50,7 +63,9 @@ cuando decidas conectar un número corporativo.
 | **ARTY · Motor de priorización** | `scripts/seo-engine.js` | Convierte auditoría + Search Console en una cola de acciones: striking distance, brechas de contenido, enlazado interno, tendencia diaria y salud ponderada. |
 | **ARTY · Percepción** | `scripts/gsc-client.js` | Consulta Google Search Console con cuenta de servicio: consultas reales, clics, impresiones, posición y estado de indexación por URL. |
 | **ARTY · Razonamiento** | `scripts/ai-advisor.js` | Convierte la auditoría + GSC en propuestas priorizadas. **Nunca publica**: solo escribe en `reports/`. |
-| **ARTY · Conversación** | `server/services/aiService.js` + WhatsApp corporativo | Generación de contenido comercial con datos reales y atención actual en WhatsApp (en desarrollo). |
+| **ARTY · Identidad** | `server/prompts/arty-maestro.md`, `server/services/artyPrompt.js` | Prompt maestro con rol de Gestor de Experiencias, tono WhatsApp, 9 módulos y límites estrictos. Valida que ninguna respuesta filtre términos prohibidos, CTAs agresivos o precios inventados. |
+| **ARTY · Guía web** | `assets/arty-chat/` | Burbuja, chat guía con enlaces internos y saludo hablado tras el primer clic. Sin claves en el navegador. |
+| **ARTY · Conversación** | `server/services/aiService.js` + WhatsApp corporativo | Generación de contenido comercial con datos reales y base de atención por WhatsApp (en desarrollo). |
 
 ### Cómo piensa el motor de priorización
 
