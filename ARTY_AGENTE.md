@@ -48,9 +48,15 @@ La sección de contacto, el pie de página y el widget enlazan a la **ficha del
 negocio en Google** (`https://share.google/Prz4WWHFgLRpAebrs`): ubicación,
 horarios, fotos y opiniones.
 
+El panel solo se muestra cuando el visitante pulsa el botón flotante: el JS le
+añade la clase `arty-panel--open` y el CSS lo mantiene oculto sin ella. Si el
+navegador restaura la página desde caché (botón atrás), el panel se cierra solo.
+
 > Importante: `arty-chat.css` y `arty-chat.js` se publican con caché inmutable.
 > Cada vez que se modifiquen, hay que subir `?v=N` en las 6 páginas para que los
-> navegadores y Cloudflare descarguen la versión nueva.
+> navegadores y Cloudflare descarguen la versión nueva. El archivo `_headers`
+> (copiado a `public/` por `build-static.js`) fuerza `no-store` en el HTML para
+> que los cambios de la página se vean al instante.
 
 Arty **lee en voz alta cada respuesta automáticamente**: no hay que pulsar el
 botón de altavoz. Al elegir una opción, la voz termina de hablar y entonces el
