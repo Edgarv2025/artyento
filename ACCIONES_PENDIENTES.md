@@ -118,6 +118,24 @@ inspección en las otras 5 URLs de la lista del sitemap.
 > En las páginas de servicio sí debe aparecer la portada como referencia: el
 > enlazado interno ya está implementado y se confirma con `npm run seo:full`.
 
+### Caso: `/iluminacion-eventos-bogota` — "Rastreada: actualmente sin indexar"
+
+Inspección del 2026-11-18: detectada por sitemap, **último rastreo 17 nov 2026
+3:00:49**, rastreo permitido, obtención correcta, pero **canónico declarado y
+elegido: N/D**. Es decir, Google evaluó la versión anterior a nuestro deploy del
+18 nov, que no tenía canonical.
+
+La URL actual sí responde 200, lleva canonical propio, `index, follow`, un H1,
+JSON-LD, está en el sitemap y recibe enlaces desde las otras 5 páginas.
+
+**Acción:** pulsar *Solicitar indexación* en esa URL para que Google rastree la
+versión nueva. Esperar unos días y volver a inspeccionar.
+
+**Si sigue sin indexar:** reforzar el valor único de esa página con información
+real (equipamiento, tipos de evento, coordinación DMX, cobertura), sin inventar
+casos ni rellenar con palabras clave. El contenido actual ya es distinto al de
+las otras páginas de servicio, así que no hay riesgo de duplicado.
+
 ---
 
 ## 3. Conectar el agente ARTY a Search Console (bloqueado por credenciales)
