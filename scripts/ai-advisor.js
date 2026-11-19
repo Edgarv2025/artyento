@@ -7,7 +7,7 @@ require('dotenv').config();
  * y de Search Console. NUNCA escribe en el sitio ni publica por su cuenta.
  *
  * Proveedores soportados (sin dependencias nuevas):
- *   GEMINI_API_KEY  → Gemini 2.0 Flash
+ *   GEMINI_API_KEY  → Gemini 3.8 Flash
  *   OPENAI_API_KEY  → gpt-4o-mini
  * Sin clave: genera propuestas deterministas con los datos disponibles.
  */
@@ -58,7 +58,7 @@ ${context.urls}`;
 async function callGemini(prompt) {
   const key = process.env.GEMINI_API_KEY;
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(key)}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -133,7 +133,7 @@ async function generate({ report, season, pages }) {
 
   if (process.env.GEMINI_API_KEY) {
     try {
-      return { provider: 'Gemini 2.0 Flash', markdown: await callGemini(prompt) };
+      return { provider: 'Gemini 3.8 Flash', markdown: await callGemini(prompt) };
     } catch (error) {
       console.warn(`[ARTY·IA] Gemini falló (${error.message}); probando OpenAI.`);
     }

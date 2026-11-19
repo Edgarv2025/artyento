@@ -271,7 +271,7 @@ Devuelve EXCLUSIVAMENTE un JSON válido con la siguiente estructura:
   // Llamada REST directa: evita la dependencia @google/generative-ai,
   // que no está instalada y hacía fallar silenciosamente esta rama.
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(process.env.GEMINI_API_KEY)}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(process.env.GEMINI_API_KEY)}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

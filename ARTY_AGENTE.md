@@ -6,6 +6,41 @@
 
 ---
 
+## 0. Cómo aprovechar ARTY hoy mismo
+
+Aunque la web aún no tiene chat visible, ARTY ya trabaja en varios frentes que puedes usar desde hoy:
+
+### a) Revisión diaria de posicionamiento (5 minutos)
+
+```powershell
+cd D:\ARTYENTO\artyento
+npm run seo:full
+Get-Content reports\seo-audit.md
+```
+
+Lee tres bloques: **Cola de acciones** (qué hacer primero), **Enfoque local** (búsquedas de Bogotá) y **Propuestas de ARTY**. Copia las propuestas a tu plan de contenido; ARTY nunca publica por su cuenta.
+
+### b) Generación de contenido comercial con datos reales
+
+`server/services/aiService.js` ya genera textos para bodas, BTL y redes usando
+`datos.js`, `paquetes.js` y la temporada activa. Con la clave de Gemini configurada,
+las salidas son más naturales; sin clave funciona en modo determinista.
+
+### c) Atención en WhatsApp
+
+El agente de WhatsApp sigue en desarrollo, pero la lógica de negocio (catálogo,
+paquetes, objeciones y tono de marca) ya existe en el servidor. Es la base para
+cuando decidas conectar un número corporativo.
+
+### d) Lo que más impacto tiene ahora
+
+1. Responder las solicitudes de indexación ya enviadas y vigilar `/iluminacion-eventos-bogota`.
+2. Mantener reseñas reales y fotos nuevas en el Perfil de Negocio de Google.
+3. Conectar la cuenta de servicio de Search Console para que el motor deje de
+   auditar archivos y empiece a decidir con búsquedas reales.
+
+---
+
 ## 1. Estado actual (implementado)
 
 | Capacidad | Dónde vive | Qué hace |
@@ -108,7 +143,7 @@ OPENAI_API_KEY=tu_clave
 2. *Crear clave de API* → copiar la clave.
 3. Guardarla en `D:\ARTYENTO\artyento\.env` como `GEMINI_API_KEY=...`.
 4. Ejecutar `npm run seo:ai` y revisar `reports/seo-audit.md`: debe aparecer
-   `provider: Gemini 2.0 Flash`.
+   `provider: Gemini 3.8 Flash`.
 
 **Costo:**
 

@@ -255,7 +255,7 @@ OPENAI_API_KEY=tu_clave        # respaldo opcional, de pago pero consumo mínimo
 ```
 
 4. Ejecutar `npm run seo:ai` y verificar en `reports/seo-audit.md` que aparece
-   `provider: Gemini 2.0 Flash`.
+   `provider: Gemini 3.8 Flash`.
 
 La clave la puedes pegar aquí y yo la escribo en el `.env`, o crear el archivo
 tú mismo. No puedo generarla yo: requiere tu inicio de sesión en Google. Las
