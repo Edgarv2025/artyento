@@ -86,7 +86,7 @@
     '<option value="Aún no estoy seguro">Aún no estoy seguro</option>',
     '</select>',
     '<input class="arty-panel__field arty-js-date" type="text" maxlength="80" placeholder="Fecha y ciudad (opcional)" aria-label="Fecha y ciudad (opcional)">',
-    '<input id="arty-phone" class="arty-panel__field arty-js-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="WhatsApp (10 dígitos)" autocomplete="tel" aria-label="Número de WhatsApp">',
+    '<input id="arty-phone" class="arty-panel__field arty-js-phone" type="tel" inputmode="numeric" placeholder="WhatsApp (10 dígitos)" autocomplete="tel" aria-label="Número de WhatsApp" maxlength="12">',
     '</div>',
     '<div class="arty-panel__submit">',
     '<button type="button" class="arty-panel__summary arty-js-summary">Enviar cotización por WhatsApp</button>',
@@ -247,12 +247,24 @@
     return String(value || '').replace(/\D/g, '');
   }
 
+  /* Acepta el número pegado con espacios o con +57 y lo deja en 10 dígitos. */
+  function normalizePhone(value) {
+    var digits = onlyDigits(value);
+    if (digits.length === 12 && digits.indexOf('57') === 0) digits = digits.slice(2);
+    return digits;
+  }
+
+  phoneInput.addEventListener('input', function () {
+    var digits = onlyDigits(phoneInput.value).slice(0, 12);
+    if (phoneInput.value !== digits) phoneInput.value = digits;
+  });
+
   summaryButton.addEventListener('click', function () {
     var name = String(nameInput.value || '').replace(/\s+/g, ' ').trim();
     var eventType = eventInput.value;
     var service = serviceInput.value;
     var details = String(dateInput.value || '').replace(/\s+/g, ' ').trim();
-    var phone = onlyDigits(phoneInput.value);
+    var phone = normalizePhone(phoneInput.value);
 
     if (!name) {
       addMessage('¡De una! Primero dinos tu nombre para poder atenderte como mereces. 😊', 'arty');
