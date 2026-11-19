@@ -150,6 +150,7 @@
 
 .arty-panel__body {
   flex: 1;
+  min-height: 80px;
   overflow-y: auto;
   padding: 14px;
   scrollbar-width: thin;
@@ -237,9 +238,27 @@
   cursor: pointer;
 }
 
+.arty-panel__head,
+.arty-panel__chips,
+.arty-panel__form,
+.arty-panel__submit,
+.arty-panel__foot {
+  flex-shrink: 0;
+}
+
 .arty-panel__lead {
-  padding: 10px 12px 4px;
+  flex-shrink: 1;
+  max-height: 36vh;
+  min-height: 70px;
+  padding: 10px 12px 6px;
+  overflow-y: auto;
   border-top: 1px solid rgba(201, 168, 92, .18);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.arty-panel__submit {
+  padding: 0 12px 8px;
 }
 
 .arty-panel__lead-label {
@@ -250,14 +269,10 @@
   font-weight: 600;
 }
 
-.arty-panel__lead-row {
-  display: flex;
-  gap: 6px;
-}
-
-.arty-panel__phone {
-  flex: 1;
-  min-width: 0;
+.arty-panel__field {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 6px;
   padding: 8px 10px;
   border: 1px solid rgba(255, 255, 255, .12);
   border-radius: 9px;
@@ -267,22 +282,31 @@
   font-size: 12px;
 }
 
-.arty-panel__phone:focus {
+.arty-panel__field:focus {
   border-color: #c9a85c;
   outline: none;
 }
 
+.arty-panel__field::placeholder {
+  color: #8f8a7f;
+}
+
+select.arty-panel__field {
+  cursor: pointer;
+}
+
 .arty-panel__summary {
-  padding: 8px 10px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 9px 10px;
   border: 0;
   border-radius: 9px;
   background: #c9a85c;
   color: #0a0a0d;
   font: inherit;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
 }
 
 .arty-panel__summary:hover,
@@ -337,7 +361,12 @@
     bottom: 80px;
     width: calc(100vw - 24px);
     max-width: none;
-    max-height: 66vh;
+    max-height: calc(100vh - 96px);
+    max-height: calc(100dvh - 96px);
+  }
+
+  .arty-panel__lead {
+    max-height: 34vh;
   }
 }
 

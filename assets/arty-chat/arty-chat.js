@@ -6,6 +6,7 @@
   window.__artyGuideLoaded = true;
 
   var WA = 'https://wa.me/573202459032?text=' + encodeURIComponent('¡Hola! Quiero cotizar un evento con Artes y Entretenimiento.');
+  var GOOGLE = 'https://share.google/Prz4WWHFgLRpAebrs';
   var AVATAR = 'assets/arty/arty-badge.webp';
 
   var GREETING = '¡Hola, hola! Qué gusto saludarte por acá 😄 Soy Arty, Gestor de Experiencias en Artes y Entretenimiento. ¿Qué celebración tienes en mente?';
@@ -66,14 +67,36 @@
     '<button type="submit" class="arty-panel__send" aria-label="Enviar">➤</button>',
     '</form>',
     '<div class="arty-panel__lead">',
-    '<label class="arty-panel__lead-label" for="arty-phone">Tu número para el resumen</label>',
-    '<div class="arty-panel__lead-row">',
-    '<input id="arty-phone" class="arty-panel__phone arty-js-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="3001234567" autocomplete="tel">',
-    '<button type="button" class="arty-panel__summary arty-js-summary">Enviar resumen</button>',
+    '<span class="arty-panel__lead-label">Tus datos para la cotización</span>',
+    '<input class="arty-panel__field arty-js-name" type="text" maxlength="60" placeholder="Tu nombre" autocomplete="name" aria-label="Tu nombre">',
+    '<select class="arty-panel__field arty-js-event" aria-label="Tipo de evento">',
+    '<option value="">Tipo de evento</option>',
+    '<option value="Boda">Boda</option>',
+    '<option value="Quince años">Quince años</option>',
+    '<option value="Cumpleaños">Cumpleaños</option>',
+    '<option value="Evento empresarial">Evento empresarial</option>',
+    '<option value="Otro">Otro</option>',
+    '</select>',
+    '<select class="arty-panel__field arty-js-service" aria-label="Servicio requerido">',
+    '<option value="">Servicio requerido</option>',
+    '<option value="DJ">DJ</option>',
+    '<option value="Sonido">Sonido</option>',
+    '<option value="Iluminación">Iluminación</option>',
+    '<option value="DJ + sonido + iluminación">DJ + sonido + iluminación</option>',
+    '<option value="Aún no estoy seguro">Aún no estoy seguro</option>',
+    '</select>',
+    '<input class="arty-panel__field arty-js-date" type="text" maxlength="80" placeholder="Fecha y ciudad (opcional)" aria-label="Fecha y ciudad (opcional)">',
+    '<input id="arty-phone" class="arty-panel__field arty-js-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="WhatsApp (10 dígitos)" autocomplete="tel" aria-label="Número de WhatsApp">',
     '</div>',
-    '<small class="arty-panel__consent">Usamos tu número solo para enviarte la cotización.</small>',
+    '<div class="arty-panel__submit">',
+    '<button type="button" class="arty-panel__summary arty-js-summary">Enviar cotización por WhatsApp</button>',
+    '<small class="arty-panel__consent">Usamos tus datos para enviarte la cotización y darte atención personalizada.</small>',
     '</div>',
-    '<div class="arty-panel__foot"><a href="', WA, '" target="_blank" rel="noopener noreferrer">Cotizar por WhatsApp ↗</a></div>'
+    '<div class="arty-panel__foot">',
+    '<a href="', WA, '" target="_blank" rel="noopener noreferrer">Cotizar por WhatsApp ↗</a>',
+    ' · ',
+    '<a href="', GOOGLE, '" target="_blank" rel="noopener noreferrer">Ver en Google ↗</a>',
+    '</div>'
   ].join('');
 
   document.body.appendChild(hint);
@@ -84,6 +107,10 @@
   var chipsBox = panel.querySelector('.arty-js-chips');
   var form = panel.querySelector('.arty-js-form');
   var input = panel.querySelector('.arty-js-input');
+  var nameInput = panel.querySelector('.arty-js-name');
+  var eventInput = panel.querySelector('.arty-js-event');
+  var serviceInput = panel.querySelector('.arty-js-service');
+  var dateInput = panel.querySelector('.arty-js-date');
   var phoneInput = panel.querySelector('.arty-js-phone');
   var summaryButton = panel.querySelector('.arty-js-summary');
   var transcript = [];
@@ -184,11 +211,6 @@
     panel.hidden = false;
     hint.hidden = true;
     launcher.setAttribute('aria-expanded', 'true');
-    try {
-      window.sessionStorage.setItem('arty-chat-opened', '1');
-    } catch (error) {
-      /* Sin almacenamiento: el chat sigue funcionando normalmente. */
-    }
     if (!started) {
       started = true;
       addMessage(GREETING, 'arty', true);
@@ -226,40 +248,76 @@
   }
 
   summaryButton.addEventListener('click', function () {
+    var name = String(nameInput.value || '').replace(/\s+/g, ' ').trim();
+    var eventType = eventInput.value;
+    var service = serviceInput.value;
+    var details = String(dateInput.value || '').replace(/\s+/g, ' ').trim();
     var phone = onlyDigits(phoneInput.value);
+
+    if (!name) {
+      addMessage('¡De una! Primero dinos tu nombre para poder atenderte como mereces. 😊', 'arty');
+      nameInput.focus();
+      return;
+    }
+    if (!eventType) {
+      addMessage('¡Listo! Falta el tipo de evento: ¿es boda, quince años, cumpleaños o empresarial?', 'arty');
+      eventInput.focus();
+      return;
+    }
+    if (!service) {
+      addMessage('¡Uy! Nos falta el servicio que necesitas: DJ, sonido, iluminación o los tres. 👇', 'arty');
+      serviceInput.focus();
+      return;
+    }
     if (!/^3\d{9}$/.test(phone)) {
       addMessage('¡Uy! Escribe un número móvil colombiano de 10 dígitos, por ejemplo 3001234567.', 'arty');
       phoneInput.focus();
       return;
     }
 
-    var recent = transcript.slice(-20);
+    var recent = transcript.slice(-12);
     var lines = recent.map(function (entry) {
       return (entry.who === 'user' ? 'Cliente' : 'Arty') + ': ' + entry.text;
     });
-    var summary = [
-      '📝 Resumen de conversación con Arty',
-      'Cliente: +57 ' + phone,
-      'Fecha: ' + new Date().toLocaleString('es-CO'),
+    var message = [
+      '¡Hola, hola! 👋 Soy ' + name + '.',
       '',
+      'Quiero cotizar mi evento y me gustaría recibir atención personalizada de parte de Arty.',
+      '',
+      'Mis datos:',
+      '• Nombre: ' + name,
+      '• Tipo de evento: ' + eventType,
+      '• Servicio requerido: ' + service,
+      '• Fecha y ciudad: ' + (details || 'Por confirmar contigo'),
+      '• WhatsApp: +57 ' + phone,
+      '',
+      'Contexto de lo que conversamos en la web:',
       lines.join('\n')
     ].join('\n');
-    var url = 'https://wa.me/573202459032?text=' + encodeURIComponent(summary);
+    var url = 'https://wa.me/573202459032?text=' + encodeURIComponent(message);
 
-    window.open(url, '_blank', 'noopener,noreferrer');
-    addMessage('¡Listo! Se abrió WhatsApp con el resumen. Envíalo y nuestro equipo lo recibe al instante. 🙌', 'arty');
+    var link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    addMessage('¡Listo! Se abrió WhatsApp con tu cotización y atención personalizada. Envíalo y te atendemos de una. 🙌', 'arty');
   });
 
   /* Voz: hombre joven, alegre y expresivo. Se prefieren voces masculinas del dispositivo. */
   var MALE_VOICE_NAMES = [
     'jorge', 'diego', 'pablo', 'bernardo', 'hector', 'héctor', 'raul', 'raúl',
     'gustavo', 'juan', 'fernando', 'alejandro', 'daniel', 'sebastian', 'sebastián',
-    'tomás', 'tomas', 'google espanol hombre', 'google español hombre'
+    'tomás', 'tomas', 'emiliano', 'santiago', 'mateo', 'andres', 'andrés', 'camilo',
+    'julian', 'julián', 'javier', 'ruben', 'rubén', 'marco', 'antonio', 'alberto',
+    'carlos', 'luis', 'oscar', 'óscar', 'ivan', 'iván', 'hombre', 'masculino', 'male'
   ];
   var NATURAL_VOICE_HINTS = ['natural', 'neural', 'premium', 'online', 'google'];
 
   function pickVoice() {
-    if (!('speechSynthesis' in window)) return { voice: null, male: false, natural: false };
+    if (!('speechSynthesis' in window)) return { voice: null, male: false, natural: false, forced: false };
     var voices = window.speechSynthesis.getVoices().filter(function (voice) {
       return /^es/i.test(voice.lang);
     });
@@ -277,17 +335,17 @@
         return name.indexOf(hint) !== -1;
       });
     })[0];
-    if (naturalMale) return { voice: naturalMale, male: true, natural: true };
-    if (maleVoices[0]) return { voice: maleVoices[0], male: true, natural: false };
+    if (naturalMale) return { voice: naturalMale, male: true, natural: true, forced: false };
+    if (maleVoices[0]) return { voice: maleVoices[0], male: true, natural: false, forced: false };
 
     var preferredLangs = ['es-MX', 'es-CO', 'es-419', 'es-AR', 'es-ES'];
     for (var i = 0; i < preferredLangs.length; i += 1) {
       var byLang = voices.filter(function (voice) {
         return voice.lang.toLowerCase().replace('_', '-') === preferredLangs[i].toLowerCase();
       })[0];
-      if (byLang) return { voice: byLang, male: false, natural: false };
+      if (byLang) return { voice: byLang, male: false, natural: false, forced: true };
     }
-    return { voice: voices[0] || null, male: false, natural: false };
+    return { voice: voices[0] || null, male: false, natural: false, forced: true };
   }
 
   function splitExpressive(text) {
@@ -327,9 +385,18 @@
         utterance.lang = 'es-MX';
       }
 
-      /* Modulación suave: se evitan los saltos bruscos de tono que suenan a máquina. */
-      utterance.pitch = selection.male ? (index === 0 ? 1.1 : 1.06) : (index === 0 ? 1.04 : 1);
-      utterance.rate = selection.male ? (index === 0 ? 1.06 : 1.02) : 1.02;
+      /* Modulación suave: se evitan los saltos bruscos de tono que suenan a máquina.
+         Si no hay voz masculina, se baja el tono para acercarse al registro pedido. */
+      if (selection.male) {
+        utterance.pitch = index === 0 ? 1.1 : 1.06;
+        utterance.rate = index === 0 ? 1.06 : 1.02;
+      } else if (selection.forced) {
+        utterance.pitch = index === 0 ? 0.92 : 0.88;
+        utterance.rate = 1;
+      } else {
+        utterance.pitch = index === 0 ? 1.04 : 1;
+        utterance.rate = 1.02;
+      }
       utterance.volume = 1;
 
       index += 1;
@@ -391,15 +458,12 @@
     document.addEventListener(eventName, greetOnFirstInteraction, { once: true, passive: true });
   });
 
-  /* Se abre una sola vez por sesión: evita que se multiplique al navegar en móvil. */
-  var alreadyOpened = false;
-  try {
-    alreadyOpened = window.sessionStorage.getItem('arty-chat-opened') === '1';
-  } catch (error) {
-    alreadyOpened = false;
-  }
+  /* El chat no se abre solo: queda el globo de saludo y el botón flotante. */
+  window.setTimeout(function () {
+    if (panel.hidden) hint.hidden = false;
+  }, 900);
+
   window.setTimeout(function () {
     hint.hidden = true;
-    if (!alreadyOpened && panel.hidden) openPanel(false);
-  }, 600);
+  }, 9000);
 })();

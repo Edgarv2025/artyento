@@ -28,19 +28,29 @@ las salidas son más naturales; sin clave funciona en modo determinista.
 
 ### c) Guía dentro de la web
 
-`assets/arty-chat/arty-chat.js` abre el chat una sola vez por sesión (para que no
-se multiplique en móvil al navegar) y deja un botón flotante para cerrarlo o
-volver a abrirlo. Arty saluda, pregunta qué celebración tienes en mente y ofrece
-enlaces a DJ, sonido, iluminación, bodas, empresariales y WhatsApp. Es una guía
-determinista: no llama a la API ni expone claves en el navegador.
+`assets/arty-chat/arty-chat.js` **no abre el chat automáticamente**: deja el globo
+de saludo y el botón flotante en las 6 páginas, para que el visitante lo abra
+cuando quiera. Arty saluda, pregunta qué celebración tiene en mente y ofrece
+enlaces a DJ, sonido, iluminación, bodas, empresariales, WhatsApp y la ficha del
+negocio en Google. Es una guía determinista: no llama a la API ni expone claves
+en el navegador.
 
-El panel incluye un campo para capturar el número del cliente. Al pulsar
-**Enviar resumen**, se abre WhatsApp con el número validado (+57, 10 dígitos) y
-la conversación reciente lista para enviar al número corporativo
-**+57 320 245 9032**. El cliente debe confirmar el envío: el sitio no envía
-mensajes por su cuenta. Para trazabilidad **automática en tiempo real** se
-necesita la API de WhatsApp Business y un backend/Worker con credenciales de
-Meta.
+El panel incluye un formulario que captura **nombre, tipo de evento, servicio
+requerido, fecha y ciudad (opcional) y número de WhatsApp**. Al pulsar **Enviar
+cotización por WhatsApp**, valida los datos y abre WhatsApp con un mensaje ya
+redactado que incluye esos datos y el contexto de la conversación, dirigido al
+número corporativo **+57 320 245 9032**. El cliente debe confirmar el envío: el
+sitio no envía mensajes por su cuenta. Para trazabilidad **automática en tiempo
+real** se necesita la API de WhatsApp Business y un backend/Worker con
+credenciales de Meta.
+
+La sección de contacto, el pie de página y el widget enlazan a la **ficha del
+negocio en Google** (`https://share.google/Prz4WWHFgLRpAebrs`): ubicación,
+horarios, fotos y opiniones.
+
+> Importante: `arty-chat.css` y `arty-chat.js` se publican con caché inmutable.
+> Cada vez que se modifiquen, hay que subir `?v=N` en las 6 páginas para que los
+> navegadores y Cloudflare descarguen la versión nueva.
 
 Arty **lee en voz alta cada respuesta automáticamente**: no hay que pulsar el
 botón de altavoz. Al elegir una opción, la voz termina de hablar y entonces el

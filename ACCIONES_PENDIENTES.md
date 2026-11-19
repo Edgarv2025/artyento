@@ -196,6 +196,9 @@ Es la palanca más fuerte para *"DJ Bogotá"*; el local pack del mapa no depende
 **Perfil identificado:** https://share.google/Prz4WWHFgLRpAebrs
 ID interno (kgmid): `/g/11zz48479v`.
 
+Ese enlace ya está publicado en la sección de contacto, en el pie de página de
+las 6 páginas y en el widget de ARTY.
+
 > Nota: Google bloquea la lectura automatizada de este panel, así que los campos
 > del perfil deben confirmarse desde la cuenta del negocio o con una captura.
 
